@@ -130,6 +130,7 @@ npm run dev
 4. **View Calendar**: Browse the calendar to see treating assignments
 5. **Send Notifications**: Notify team members about upcoming treating duties
 6. **Test Emails**: Test email notifications through the Email Test panel
+7. **Automatic Weekly Notifications**: The system sends automatic notifications every Monday at 8:00 AM to remind team members about the upcoming Thursday treating session
 
 ### Scheduling Logic
 

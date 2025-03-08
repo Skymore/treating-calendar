@@ -1,0 +1,11 @@
+# Allow authenticated requests
+# https://supabase.com/docs/guides/functions/deploy
+auth.jwt.enable = true
+
+# Whether user-level authentication is required
+[functions.send-weekly-notification]
+verify_jwt = false
+
+# Environment variables
+[functions.send-weekly-notification.environment]
+APP_URL = "https://treating.ruit.me" 

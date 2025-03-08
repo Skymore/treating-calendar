@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabase';
 import { today, getLocalTimeZone, CalendarDate } from "@internationalized/date";
 import { useEmailTemplate } from '../hooks/useEmailTemplate';
 import { getUserId } from '../lib/userIdUtils';
+import { useTeamInfo } from '../hooks/useTeamInfo';
 
 interface SettingsProps {
   showSettings: boolean;
@@ -36,6 +37,14 @@ export default function Settings({
     updateTeamTemplate,
     resetTemplates
   } = useEmailTemplate();
+
+  // Use the team info hook for notification settings
+  const {
+    teamInfo,
+    loading: teamLoading,
+    error: teamError,
+    toggleNotifications
+  } = useTeamInfo();
 
   // Load templates from database on component mount
   useEffect(() => {
@@ -157,6 +166,11 @@ export default function Settings({
     }
   };
 
+  // Handle notification toggle
+  const handleNotificationToggle = async (enabled: boolean) => {
+    await toggleNotifications(enabled);
+  };
+
   // If settings not shown, don't render anything
   if (!showSettings) return null;
 
@@ -177,6 +191,12 @@ export default function Settings({
           onClick={() => setActiveTab('templates')}
         >
           Email Templates
+        </button>
+        <button 
+          className={`px-5 py-3 font-medium text-sm ${activeTab === 'notifications' ? 'bg-blue-50 text-blue-700 border-b-2 border-blue-500' : 'text-gray-600 hover:bg-gray-50'}`}
+          onClick={() => setActiveTab('notifications')}
+        >
+          Notification Settings
         </button>
       </div>
       
@@ -346,6 +366,64 @@ export default function Settings({
                   </button>
                 </div>
               </>
+            )}
+          </div>
+        )}
+
+        {activeTab === 'notifications' && (
+          <div>
+            <h3 className="font-medium text-lg mb-3">Notification Settings</h3>
+            
+            {teamLoading ? (
+              <div className="flex justify-center p-4">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+              </div>
+            ) : teamError ? (
+              <div className="bg-red-50 text-red-700 p-3 rounded-md mb-4">
+                Error loading team information: {teamError}
+              </div>
+            ) : (
+              <div>
+                <div className="mb-6 p-4 bg-blue-50 border border-blue-100 rounded-md">
+                  <h4 className="font-medium text-blue-800 mb-2">About Automatic Notifications</h4>
+                  <p className="text-sm text-blue-700 mb-3">
+                    Our system sends automatic notifications every Monday at 8:00 AM to remind the treating person 
+                    and all team members about the upcoming Thursday treating session.
+                    You can control whether this feature is enabled below.
+                  </p>
+                </div>
+
+                <div className="border rounded-lg p-4 bg-gray-50 mb-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h4 className="font-medium">Automatic Notifications</h4>
+                      <p className="text-sm text-gray-600 mt-1">
+                        {teamInfo?.notificationsEnabled 
+                          ? 'Automatic notifications are enabled. The system will send notifications every Monday.' 
+                          : 'Automatic notifications are disabled. The system will not send automatic notifications.'}
+                      </p>
+                    </div>
+                    <div className="flex items-center">
+                      <span className="mr-2 text-sm text-gray-600">
+                        {teamInfo?.notificationsEnabled ? 'On' : 'Off'}
+                      </span>
+                      <label className="relative inline-flex items-center cursor-pointer">
+                        <input 
+                          type="checkbox" 
+                          className="sr-only peer" 
+                          checked={teamInfo?.notificationsEnabled === true}
+                          onChange={(e) => handleNotificationToggle(e.target.checked)}
+                        />
+                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="text-xs text-gray-500 bg-yellow-50 p-3 rounded-md border border-yellow-200 mt-4">
+                  <strong>Note:</strong> Even with automatic notifications disabled, you can still manually send notifications from the calendar page.
+                </div>
+              </div>
             )}
           </div>
         )}

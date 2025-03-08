@@ -1,0 +1,8 @@
+{
+  "crons": [
+    {
+      "path": "/api/trigger-weekly-notification",
+      "schedule": "0 8 * * 1"
+    }
+  ]
+} 

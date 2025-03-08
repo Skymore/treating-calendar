@@ -40,6 +40,29 @@ export function useTeamInfo() {
     }
   };
 
+  // Toggle notifications setting
+  const toggleNotifications = async (enabled: boolean) => {
+    const userId = getUserId();
+    setLoading(true);
+    try {
+      const { error } = await supabase
+        .from('teams')
+        .update({ notificationsEnabled: enabled })
+        .eq('userId', userId);
+
+      if (error) throw error;
+
+      // Update local state
+      setTeamInfo(prev => prev ? { ...prev, notificationsEnabled: enabled } : null);
+      console.log(`Automatic notifications ${enabled ? 'enabled' : 'disabled'} for team: ${userId}`);
+    } catch (err) {
+      console.error('Failed to update notification settings:', err);
+      setError('Failed to update notification settings, please try again later');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Create or update team information
   const saveTeamInfo = async (teamName: string) => {
     const userId = getUserId();
@@ -67,7 +90,8 @@ export function useTeamInfo() {
         const newTeam: TeamInfo = {
           userId,
           teamName,
-          createdAt: new Date().toISOString()
+          createdAt: new Date().toISOString(),
+          notificationsEnabled: false // Default to disabled for new teams
         };
 
         const { error } = await supabase
@@ -79,7 +103,14 @@ export function useTeamInfo() {
 
       // Update local state
       localStorage.setItem('treating_calendar_team_name', teamName);
-      setTeamInfo({ userId, teamName, createdAt: new Date().toISOString() });
+      setTeamInfo(prev => {
+        return {
+          userId,
+          teamName,
+          createdAt: prev?.createdAt || new Date().toISOString(),
+          notificationsEnabled: prev?.notificationsEnabled !== undefined ? prev.notificationsEnabled : false
+        };
+      });
     } catch (err) {
       console.error('Failed to save team information:', err);
       setError('Failed to save team information, please try again later');
@@ -105,6 +136,7 @@ export function useTeamInfo() {
     loading,
     error,
     saveTeamInfo,
-    fetchTeamInfo
+    fetchTeamInfo,
+    toggleNotifications
   };
 } 
