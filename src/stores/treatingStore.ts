@@ -20,6 +20,7 @@ interface TreatingState {
   swapMode: boolean;
   selectedDates: string[];
   debugDate: CalendarDate;
+  debugMode: boolean;
   newName: string;
   newEmail: string;
   newPhone: string;
@@ -38,6 +39,7 @@ interface TreatingState {
   setSwapMode: (mode: boolean) => void;
   setSelectedDates: (dates: string[] | ((prev: string[]) => string[])) => void;
   setDebugDate: (date: CalendarDate) => void;
+  setDebugMode: (mode: boolean) => void;
   setNewName: (name: string) => void;
   setNewEmail: (email: string) => void;
   setNewPhone: (phone: string) => void;
@@ -60,6 +62,8 @@ interface TreatingState {
   handleDateSelect: (date: CalendarDate) => void;
   removePerson: (id: string) => Promise<void>;
   addPerson: () => Promise<void>;
+  sendHostNotification: () => void;
+  sendTeamNotification: () => void;
   
   // 内部方法
   fetchAndMarkCompleted: () => Promise<[HostSchedule[], HostSchedule[]]>;
@@ -81,6 +85,7 @@ export const useTreatingStore = create<TreatingState>((set, get) => ({
   swapMode: false,
   selectedDates: [],
   debugDate: today(getLocalTimeZone()),
+  debugMode: false,
   newName: '',
   newEmail: '',
   newPhone: '',
@@ -105,6 +110,7 @@ export const useTreatingStore = create<TreatingState>((set, get) => ({
     selectedDates: typeof selectedDates === 'function' ? selectedDates(state.selectedDates) : selectedDates 
   })),
   setDebugDate: (debugDate) => set({ debugDate }),
+  setDebugMode: (debugMode) => set({ debugMode }),
   setNewName: (newName) => set({ newName }),
   setNewEmail: (newEmail) => set({ newEmail }),
   setNewPhone: (newPhone) => set({ newPhone }),
@@ -669,5 +675,64 @@ export const useTreatingStore = create<TreatingState>((set, get) => ({
       console.error("Failed to add person:", error);
       alert("Failed to add person. Please try again.");
     }
-  }
+  },
+  
+  sendHostNotification: () => {
+    const { schedule, persons, debugDate } = get();
+    
+    // 查找下一个treating日期和人员
+    const upcomingSchedules = schedule
+      .filter((s) => {
+        const scheduleDate = parseDate(s.date);
+        return scheduleDate.compare(debugDate) >= 0;
+      })
+      .sort((a, b) => {
+        const dateA = parseDate(a.date);
+        const dateB = parseDate(b.date);
+        return dateA.compare(dateB);
+      });
+
+    if (upcomingSchedules.length === 0) {
+      alert('No upcoming treating days scheduled');
+      return;
+    }
+
+    const nextSchedule = upcomingSchedules[0];
+    const person = persons.find((p) => p.id === nextSchedule.personnelId);
+    
+    if (!person) {
+      alert('No person assigned to the next treating day');
+      return;
+    }
+    
+    // 这里可以实现发送通知的逻辑，例如调用API或发送邮件
+    alert(`Host notification would be sent to ${person.name} for date ${nextSchedule.date}`);
+  },
+  
+  sendTeamNotification: () => {
+    const { schedule, persons, debugDate } = get();
+    
+    // 查找下一个treating日期和人员
+    const upcomingSchedules = schedule
+      .filter((s) => {
+        const scheduleDate = parseDate(s.date);
+        return scheduleDate.compare(debugDate) >= 0;
+      })
+      .sort((a, b) => {
+        const dateA = parseDate(a.date);
+        const dateB = parseDate(b.date);
+        return dateA.compare(dateB);
+      });
+
+    if (upcomingSchedules.length === 0) {
+      alert('No upcoming treating days scheduled');
+      return;
+    }
+
+    const nextSchedule = upcomingSchedules[0];
+    const person = persons.find((p) => p.id === nextSchedule.personnelId);
+    
+    // 这里可以实现发送团队通知的逻辑
+    alert(`Team notification would be sent to all team members about ${person?.name || 'Unassigned'} hosting on ${nextSchedule.date}`);
+  },
 })); 
