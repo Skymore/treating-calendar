@@ -3,25 +3,34 @@ import './App.css';
 import TreatingCalendar from './components/TreatingCalendar';
 import Settings from './components/Settings';
 import TeamInfo from './components/TeamInfo';
-import { useTreatingCalendar } from './hooks/useTreatingCalendar';
 import EmailTest from './components/EmailTest';
 import { getUserId } from './lib/userIdUtils';
 import { useTeamInfo } from './hooks/useTeamInfo';
+import ZustandTest from './components/ZustandTest';
+import { useTreatingStore } from './stores/treatingStore';
 
 export default function App() {
-  const [showSettings, setShowSettings] = useState(false);
-  const [showEmailTest, setShowEmailTest] = useState(false);
-  const [showTeamInfo, setShowTeamInfo] = useState(false);
+  // 使用单一状态来控制当前打开的tab
+  const [activeTab, setActiveTab] = useState<'none' | 'settings' | 'emailTest' | 'teamInfo' | 'zustandTest'>('none');
   
   // Use the team info hook
   const { teamInfo, loading: teamLoading } = useTeamInfo();
   
-  // Use treating calendar hook to get data
+  // 直接从store获取数据和方法
   const {
     persons,
     schedule,
-    fetchData
-  } = useTreatingCalendar();
+    fetchData,
+  } = useTreatingStore();
+
+  // 切换tab的函数
+  const toggleTab = (tab: 'settings' | 'emailTest' | 'teamInfo' | 'zustandTest') => {
+    if (activeTab === tab) {
+      setActiveTab('none');
+    } else {
+      setActiveTab(tab);
+    }
+  };
 
   // Handle URL parameters and get team info when component mounts
   useEffect(() => {
@@ -46,27 +55,50 @@ export default function App() {
               {teamLoading ? 'Loading...' : (teamInfo?.teamName || 'My Team')} - Manage Thursday treating schedule
             </p>
           </div>
-          <div className="flex overflow-x-auto whitespace-nowrap pb-2 w-full md:w-auto">
+          <div className="flex gap-1 w-full md:w-auto">
             <button 
-              className="px-2 py-1.5 md:px-4 md:py-2 bg-purple-50 hover:bg-purple-100 rounded-md text-purple-700 font-medium transition-colors text-xs md:text-base mr-2"
-              onClick={() => setShowTeamInfo(!showTeamInfo)}
+              className={`px-2 py-1.5 md:px-4 md:py-2 rounded-md font-medium transition-colors text-xs md:text-sm ${
+                activeTab === 'teamInfo' 
+                  ? 'bg-purple-100 text-purple-800' 
+                  : 'bg-purple-50 hover:bg-purple-100 text-purple-700'
+              }`}
+              onClick={() => toggleTab('teamInfo')}
             >
-              {showTeamInfo ? 'Close' : 'Team Info'}
+              {activeTab === 'teamInfo' ? 'Close' : 'Team Info'}
             </button>
             <button 
-              className="px-2 py-1.5 md:px-4 md:py-2 bg-blue-50 hover:bg-blue-100 rounded-md text-blue-700 font-medium transition-colors text-xs md:text-base mr-2"
-              onClick={() => setShowSettings(!showSettings)}
+              className={`px-2 py-1.5 md:px-4 md:py-2 rounded-md font-medium transition-colors text-xs md:text-sm ${
+                activeTab === 'settings' 
+                  ? 'bg-blue-100 text-blue-800' 
+                  : 'bg-blue-50 hover:bg-blue-100 text-blue-700'
+              }`}
+              onClick={() => toggleTab('settings')}
             >
-              {showSettings ? 'Close' : 'Settings'}
+              {activeTab === 'settings' ? 'Close' : 'Settings'}
             </button>
             <button 
-              className="px-2 py-1.5 md:px-4 md:py-2 bg-green-50 hover:bg-green-100 rounded-md text-green-700 font-medium transition-colors text-xs md:text-base mr-2"
-              onClick={() => setShowEmailTest(!showEmailTest)}
+              className={`px-2 py-1.5 md:px-4 md:py-2 rounded-md font-medium transition-colors text-xs md:text-sm ${
+                activeTab === 'emailTest' 
+                  ? 'bg-green-100 text-green-800' 
+                  : 'bg-green-50 hover:bg-green-100 text-green-700'
+              }`}
+              onClick={() => toggleTab('emailTest')}
             >
-              {showEmailTest ? 'Close' : 'Email Test'}
+              {activeTab === 'emailTest' ? 'Close' : 'Email Test'}
+            </button>
+            {/* 在移动端隐藏Zustand Test按钮 */}
+            <button 
+              className={`hidden md:block px-2 py-1.5 md:px-4 md:py-2 rounded-md font-medium transition-colors text-xs md:text-sm ${
+                activeTab === 'zustandTest' 
+                  ? 'bg-yellow-100 text-yellow-800' 
+                  : 'bg-yellow-50 hover:bg-yellow-100 text-yellow-700'
+              }`}
+              onClick={() => toggleTab('zustandTest')}
+            >
+              {activeTab === 'zustandTest' ? 'Close' : 'Zustand Test'}
             </button>
             <button 
-              className="px-2 py-1.5 md:px-4 md:py-2 bg-gray-50 hover:bg-gray-100 rounded-md text-gray-700 font-medium transition-colors text-xs md:text-base"
+              className="px-2 py-1.5 md:px-4 md:py-2 bg-gray-50 hover:bg-gray-100 rounded-md text-gray-700 font-medium transition-colors text-xs md:text-sm"
               onClick={() => window.open('https://github.com/Skymore/treating-calendar', '_blank')}
             >
               GitHub
@@ -74,36 +106,34 @@ export default function App() {
           </div>
         </div>
         
-        {showTeamInfo && (
-          <div className="mt-4 overflow-x-auto">
+        {activeTab === 'teamInfo' && (
+          <div className="mt-4">
             <TeamInfo 
-              onClose={() => setShowTeamInfo(false)} 
+              onClose={() => setActiveTab('none')} 
             />
           </div>
         )}
         
+        {activeTab === 'zustandTest' && (
+          <div className="mt-4">
+            <ZustandTest />
+          </div>
+        )}
+        
         <Settings 
-          showSettings={showSettings}
-          setShowSettings={setShowSettings}
+          showSettings={activeTab === 'settings'}
+          setShowSettings={(show) => setActiveTab(show ? 'settings' : 'none')}
           personnel={persons}
           schedule={schedule}
           fetchData={fetchData}
         />
         
-        {showEmailTest && <div className="overflow-x-auto"><EmailTest /></div>}
+        {activeTab === 'emailTest' && <div><EmailTest /></div>}
       </header>
       
-      <main className="overflow-x-auto">
+      <main>
         <TreatingCalendar />
       </main>
-      
-      <footer className="mt-8 pt-4 border-t text-center text-gray-500 text-sm">
-        <div className="flex flex-col md:flex-row justify-between items-center">
-          <div>
-            &copy; {new Date().getFullYear()} Rui Tao's Treating Calendar
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }

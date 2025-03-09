@@ -178,51 +178,51 @@ export default function Settings({
   const nextThursday = getNextThursday();
 
   return (
-    <div className="mt-4 bg-white rounded-lg border border-gray-200 overflow-hidden">
-      <div className="flex border-b">
+    <div className="mt-4 bg-white rounded-lg shadow-md overflow-hidden">
+      <div className="flex flex-wrap border-b">
         <button 
-          className={`px-5 py-3 font-medium text-sm ${activeTab === 'export' ? 'bg-blue-50 text-blue-700 border-b-2 border-blue-500' : 'text-gray-600 hover:bg-gray-50'}`}
+          className={`px-3 py-2 md:px-5 md:py-3 font-medium text-xs md:text-sm ${activeTab === 'export' ? 'bg-blue-50 text-blue-700 border-b-2 border-blue-500' : 'text-gray-600 hover:bg-gray-50'}`}
           onClick={() => setActiveTab('export')}
         >
           Export/Import
         </button>
         <button 
-          className={`px-5 py-3 font-medium text-sm ${activeTab === 'templates' ? 'bg-blue-50 text-blue-700 border-b-2 border-blue-500' : 'text-gray-600 hover:bg-gray-50'}`}
+          className={`px-3 py-2 md:px-5 md:py-3 font-medium text-xs md:text-sm ${activeTab === 'templates' ? 'bg-blue-50 text-blue-700 border-b-2 border-blue-500' : 'text-gray-600 hover:bg-gray-50'}`}
           onClick={() => setActiveTab('templates')}
         >
           Email Templates
         </button>
         <button 
-          className={`px-5 py-3 font-medium text-sm ${activeTab === 'notifications' ? 'bg-blue-50 text-blue-700 border-b-2 border-blue-500' : 'text-gray-600 hover:bg-gray-50'}`}
+          className={`px-3 py-2 md:px-5 md:py-3 font-medium text-xs md:text-sm ${activeTab === 'notifications' ? 'bg-blue-50 text-blue-700 border-b-2 border-blue-500' : 'text-gray-600 hover:bg-gray-50'}`}
           onClick={() => setActiveTab('notifications')}
         >
           Notification Settings
         </button>
       </div>
       
-      <div className="p-5">
+      <div className="p-3 md:p-5">
         {activeTab === 'export' && (
           <div>
-            <h3 className="font-medium text-lg mb-3">Export/Import Data</h3>
-            <div className="grid grid-cols-2 gap-4 mb-4">
-              <div className="border rounded-lg p-4 bg-gray-50">
+            <h3 className="font-medium text-base md:text-lg mb-3">Export/Import Data</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              <div className="border rounded-lg p-3 md:p-4 bg-gray-50">
                 <h4 className="font-medium mb-2">Export Data</h4>
-                <p className="text-sm text-gray-600 mb-3">
+                <p className="text-xs md:text-sm text-gray-600 mb-3">
                   Download all personnel and schedule data as a JSON file for backup.
                 </p>
                 <button 
-                  className="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors"
+                  className="w-full px-3 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md transition-colors text-sm font-medium"
                   onClick={exportData}
                 >
                   Export to JSON
                 </button>
               </div>
-              <div className="border rounded-lg p-4 bg-gray-50">
+              <div className="border rounded-lg p-3 md:p-4 bg-gray-50">
                 <h4 className="font-medium mb-2">Import Data</h4>
-                <p className="text-sm text-gray-600 mb-3">
+                <p className="text-xs md:text-sm text-gray-600 mb-3">
                   Restore data from a previously exported JSON file.
                 </p>
-                <label className="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors flex items-center justify-center cursor-pointer">
+                <label className="w-full px-3 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md transition-colors flex items-center justify-center cursor-pointer text-sm font-medium">
                   <span>Select JSON File</span>
                   <input 
                     type="file" 
@@ -241,7 +241,7 @@ export default function Settings({
         
         {activeTab === 'templates' && (
           <div>
-            <h3 className="font-medium text-lg mb-3">Email Templates</h3>
+            <h3 className="font-medium text-base md:text-lg mb-3">Email Templates</h3>
             
             {templateLoading ? (
               <div className="flex justify-center p-4">
@@ -254,12 +254,12 @@ export default function Settings({
             ) : (
               <>
                 <div className="mb-4">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-xs md:text-sm font-medium text-gray-700 mb-2">
                     Host Notification Subject
                   </label>
                   <input 
                     type="text"
-                    className="w-full border rounded-md p-2"
+                    className="w-full border rounded-md p-2 text-sm"
                     value={emailSubject}
                     onChange={(e) => setEmailSubject(e.target.value)}
                     placeholder="Email subject line"
@@ -267,23 +267,23 @@ export default function Settings({
                 </div>
                 
                 <div className="mb-4">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-xs md:text-sm font-medium text-gray-700 mb-2">
                     Host Notification Template (HTML)
                   </label>
                   <textarea 
-                    className="w-full border rounded-md p-3 h-40"
+                    className="w-full border rounded-md p-2 h-32 md:h-40 text-sm"
                     value={emailTemplate}
                     onChange={(e) => setEmailTemplate(e.target.value)}
                   ></textarea>
                 </div>
                 
                 <div className="mb-4">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-xs md:text-sm font-medium text-gray-700 mb-2">
                     Team Notification Subject
                   </label>
                   <input 
                     type="text"
-                    className="w-full border rounded-md p-2"
+                    className="w-full border rounded-md p-2 text-sm"
                     value={teamEmailSubject}
                     onChange={(e) => setTeamEmailSubject(e.target.value)}
                     placeholder="Email subject line"
@@ -291,23 +291,23 @@ export default function Settings({
                 </div>
                 
                 <div className="mb-4">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-xs md:text-sm font-medium text-gray-700 mb-2">
                     Team Notification Template (HTML)
                   </label>
                   <textarea 
-                    className="w-full border rounded-md p-3 h-40"
+                    className="w-full border rounded-md p-2 h-32 md:h-40 text-sm"
                     value={teamEmailTemplate}
                     onChange={(e) => setTeamEmailTemplate(e.target.value)}
                   ></textarea>
                 </div>
                 
-                <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-xs md:text-sm font-medium text-gray-700 mb-2">
                       Available Variables
                     </label>
                     <div className="border rounded-md p-3 bg-gray-50">
-                      <ul className="text-sm space-y-1">
+                      <ul className="text-xs md:text-sm space-y-1">
                         <li><code>{'{name}'}</code> - Person's name</li>
                         <li><code>{'{date}'}</code> - Treating date</li>
                         <li><code>{'{email}'}</code> - Person's email</li>
@@ -316,10 +316,10 @@ export default function Settings({
                     </div>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-xs md:text-sm font-medium text-gray-700 mb-2">
                       Preview
                     </label>
-                    <div className="border rounded-md p-3 bg-gray-50 text-sm">
+                    <div className="border rounded-md p-3 bg-gray-50 text-xs md:text-sm">
                       <p className="font-medium mb-2">Host Template:</p>
                       <p className="text-xs text-gray-500 mb-1">Subject: {emailSubject
                         .replace('{name}', 'John Doe')
@@ -353,13 +353,13 @@ export default function Settings({
                 
                 <div className="flex justify-end gap-2">
                   <button 
-                    className="px-4 py-2 border rounded-md"
+                    className="px-3 py-1 border rounded-md text-sm"
                     onClick={resetEmailTemplate}
                   >
                     Reset to Default
                   </button>
                   <button 
-                    className="px-4 py-2 bg-blue-600 text-white rounded-md"
+                    className="px-3 py-1 bg-blue-500 text-white rounded-md text-sm font-medium"
                     onClick={saveEmailTemplate}
                   >
                     Save Templates
@@ -372,7 +372,7 @@ export default function Settings({
 
         {activeTab === 'notifications' && (
           <div>
-            <h3 className="font-medium text-lg mb-3">Notification Settings</h3>
+            <h3 className="font-medium text-base md:text-lg mb-3">Notification Settings</h3>
             
             {teamLoading ? (
               <div className="flex justify-center p-4">
@@ -384,27 +384,27 @@ export default function Settings({
               </div>
             ) : (
               <div>
-                <div className="mb-6 p-4 bg-blue-50 border border-blue-100 rounded-md">
-                  <h4 className="font-medium text-blue-800 mb-2">About Automatic Notifications</h4>
-                  <p className="text-sm text-blue-700 mb-3">
+                <div className="mb-4 p-3 md:p-4 bg-blue-50 border border-blue-100 rounded-md">
+                  <h4 className="font-medium text-blue-800 mb-2 text-sm">About Automatic Notifications</h4>
+                  <p className="text-xs md:text-sm text-blue-700">
                     Our system sends automatic notifications every Monday at 8:00 AM to remind the treating person 
                     and all team members about the upcoming Thursday treating session.
                     You can control whether this feature is enabled below.
                   </p>
                 </div>
 
-                <div className="border rounded-lg p-4 bg-gray-50 mb-4">
+                <div className="border rounded-lg p-3 md:p-4 bg-gray-50 mb-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <h4 className="font-medium">Automatic Notifications</h4>
-                      <p className="text-sm text-gray-600 mt-1">
+                      <h4 className="font-medium text-sm">Automatic Notifications</h4>
+                      <p className="text-xs md:text-sm text-gray-600 mt-1">
                         {teamInfo?.notificationsEnabled 
                           ? 'Automatic notifications are enabled. The system will send notifications every Monday.' 
                           : 'Automatic notifications are disabled. The system will not send automatic notifications.'}
                       </p>
                     </div>
                     <div className="flex items-center">
-                      <span className="mr-2 text-sm text-gray-600">
+                      <span className="mr-2 text-xs md:text-sm text-gray-600">
                         {teamInfo?.notificationsEnabled ? 'On' : 'Off'}
                       </span>
                       <label className="relative inline-flex items-center cursor-pointer">
@@ -414,7 +414,7 @@ export default function Settings({
                           checked={teamInfo?.notificationsEnabled === true}
                           onChange={(e) => handleNotificationToggle(e.target.checked)}
                         />
-                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                        <div className="w-9 h-5 md:w-11 md:h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 md:after:h-5 md:after:w-5 after:transition-all peer-checked:bg-blue-500"></div>
                       </label>
                     </div>
                   </div>
