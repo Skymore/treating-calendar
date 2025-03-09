@@ -20,7 +20,7 @@ export function NextTreatingInfo({
         return (
             <div className="bg-blue-50 p-4 border-b border-blue-100">
                 <div className="text-center text-blue-700">
-                    No upcoming treating days scheduled
+                    No upcoming breakfast days scheduled
                 </div>
             </div>
         );
@@ -30,11 +30,11 @@ export function NextTreatingInfo({
         <div className="bg-blue-50 p-4 border-b border-blue-100">
             <div className="flex flex-wrap justify-between items-center gap-4">
                 <div className="space-y-1">
-                    <div className="text-blue-700 font-medium text-sm">Next Treating Day</div>
+                    <div className="text-blue-700 font-medium text-sm">Next Breakfast Day</div>
                     <div className="text-xl font-bold">{nextTreatingInfo.formattedDate}</div>
                 </div>
                 <div className="space-y-1">
-                    <div className="text-blue-700 font-medium text-sm">Treating Person</div>
+                    <div className="text-blue-700 font-medium text-sm">Breakfast Person</div>
                     <div className="text-xl font-bold">{nextTreatingInfo.person?.name || "Unassigned"}</div>
                 </div>
                 <div className="flex flex-wrap gap-2">

@@ -152,7 +152,7 @@ const TeamInfo: React.FC<TeamInfoProps> = ({ onClose }) => {
           <div className="bg-blue-50 p-3 rounded-md">
             <p className="text-xs md:text-sm text-blue-700">
               <span className="font-semibold">Tip:</span> To share the schedule with team members, copy the share link above and send it to them.
-              Team members will automatically join your team when they open the link, allowing them to view and manage the same team schedule.
+              Team members will be able to view and manage the same team schedule when they open the link.
             </p>
           </div>
         </>

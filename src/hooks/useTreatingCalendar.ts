@@ -60,9 +60,9 @@ export function useTreatingCalendar() {
             }
             
             // Use template from database or fallback to default
-            let subject = 'Reminder: You are scheduled to treat the team on {date}';
+            let subject = 'Reminder: You are scheduled to bring breakfast for the team on {date}';
             let content = `<p>Dear {name},</p>
-<p>This is a friendly reminder that you are scheduled to treat the team on <strong>{date}</strong> (Thursday).</p>
+<p>This is a friendly reminder that you are scheduled to bring breakfast for the team on <strong>{date}</strong> (Thursday morning).</p>
 <p>Please make necessary preparations. If you have any questions or cannot fulfill this duty on the scheduled date, please contact the team lead as soon as possible to arrange an alternative.</p>
 <p>Thank you for your cooperation!</p>`;
             
@@ -151,9 +151,9 @@ export function useTreatingCalendar() {
             }
             
             // Use template from database or fallback to default
-            let subject = 'Team Notification: Treating Schedule for {date}';
+            let subject = 'Team Notification: Breakfast Schedule for {date}';
             let content = `<p>Dear Team Members,</p>
-<p>This is a friendly reminder that <strong>{name}</strong> is scheduled to treat the team on <strong>{date}</strong> (Thursday).</p>
+<p>This is a friendly reminder that <strong>{name}</strong> is scheduled to bring breakfast for the team on <strong>{date}</strong> (Thursday morning).</p>
 <p>Please remember to join!</p>
 <p>Have a great day!</p>`;
             

@@ -50,9 +50,9 @@ export default function App() {
       <header className="mb-6 bg-white shadow-sm rounded-lg p-4">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
           <div className="mb-4 md:mb-0">
-            <h1 className="text-2xl font-bold text-blue-600">Thursday Treating Calendar</h1>
+            <h1 className="text-2xl font-bold text-blue-600">Thursday Breakfast Calendar</h1>
             <p className="text-gray-600">
-              {teamLoading ? 'Loading...' : (teamInfo?.teamName || 'My Team')} - Manage Thursday treating schedule
+              {teamLoading ? 'Loading...' : (teamInfo?.teamName || 'My Team')} - Manage Thursday breakfast schedule
             </p>
           </div>
           <div className="flex gap-1 w-full md:w-auto">

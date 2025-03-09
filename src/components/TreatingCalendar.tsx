@@ -338,7 +338,7 @@ export default function TreatingCalendar({ className }: TreatingCalendarProps) {
                             <div className="flex flex-wrap gap-x-6 gap-y-2">
                                 <div className="flex items-center">
                                     <div className="w-4 h-4 bg-blue-50 border border-gray-200 mr-2"></div>
-                                    <span>Thursday (Treating Day)</span>
+                                    <span>Thursday (Breakfast Day)</span>
                                 </div>
                                 <div className="flex items-center">
                                     <div className="w-4 h-4 flex items-center justify-center">
@@ -399,6 +399,7 @@ export default function TreatingCalendar({ className }: TreatingCalendarProps) {
                         <h2 className="text-xl font-bold text-gray-800">Team Members</h2>
 
                         <div className="flex overflow-x-auto whitespace-nowrap pb-2 w-full md:w-auto">
+                            <span className="text-gray-700 text-sm mr-2 self-center">Schedule by:</span>
                             <button
                                 onClick={() => changeSortType(SortType.ByName)}
                                 className={`px-2 py-1.5 md:px-3 md:py-2 rounded-md text-xs md:text-sm mr-2 ${
@@ -408,7 +409,7 @@ export default function TreatingCalendar({ className }: TreatingCalendarProps) {
                                 }`}
                                 title="Generate 6-month schedule ordered by name"
                             >
-                                Name-Based
+                                Name
                             </button>
                             <button
                                 onClick={() => changeSortType(SortType.Random)}

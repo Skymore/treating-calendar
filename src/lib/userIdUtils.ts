@@ -113,16 +113,3 @@ export const getUserId = (): string => {
   
   return userId;
 };
-
-// Get team information from localStorage
-export const getTeamInfo = (): { userId: string; teamName: string } => {
-  const userId = getUserId();
-  const teamName = localStorage.getItem('treating_calendar_team_name') || 'My Team';
-  
-  return { userId, teamName };
-};
-
-// Save team name to localStorage
-export const saveTeamName = (teamName: string): void => {
-  localStorage.setItem('treating_calendar_team_name', teamName);
-}; 

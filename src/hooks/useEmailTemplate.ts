@@ -118,14 +118,14 @@ export function useEmailTemplate(): UseEmailTemplateReturn {
           .insert({
             template_type: 'host_notification',
             template_name: 'Default Host Notification',
-            subject: 'Reminder: You are scheduled to treat the team on {date}',
+            subject: 'Reminder: You are scheduled to bring breakfast for the team on {date}',
             html_content: `<p>Dear {name},</p>
-<p>This is a friendly reminder that you are scheduled to treat the team on <strong>{date}</strong> (Thursday).</p>
+<p>This is a friendly reminder that you are scheduled to bring breakfast for the team on <strong>{date}</strong> (Thursday morning).</p>
 <p>Please make necessary preparations. If you have any questions or cannot fulfill this duty on the scheduled date, please contact the team lead as soon as possible to arrange an alternative.</p>
 <p>Thank you for your cooperation!</p>`,
             text_content: `Dear {name},
 
-This is a friendly reminder that you are scheduled to treat the team on {date} (Thursday).
+This is a friendly reminder that you are scheduled to bring breakfast for the team on {date} (Thursday morning).
 
 Please make necessary preparations. If you have any questions or cannot fulfill this duty on the scheduled date, please contact the team lead as soon as possible to arrange an alternative.
 
@@ -146,14 +146,14 @@ Thank you for your cooperation!`,
           .insert({
             template_type: 'team_notification',
             template_name: 'Default Team Notification',
-            subject: 'Team Notification: Treating Schedule for {date}',
+            subject: 'Team Notification: Breakfast Schedule for {date}',
             html_content: `<p>Dear Team Members,</p>
-<p>This is a friendly reminder that <strong>{name}</strong> is scheduled to treat the team on <strong>{date}</strong> (Thursday).</p>
+<p>This is a friendly reminder that <strong>{name}</strong> is scheduled to bring breakfast for the team on <strong>{date}</strong> (Thursday morning).</p>
 <p>Please remember to join!</p>
 <p>Have a great day!</p>`,
             text_content: `Dear Team Members,
 
-This is a friendly reminder that {name} is scheduled to treat the team on {date} (Thursday).
+This is a friendly reminder that {name} is scheduled to bring breakfast for the team on {date} (Thursday morning).
 
 Please remember to join!
 
