@@ -3,6 +3,7 @@ import { SortType } from "../types/types";
 import { CalendarCell } from "./CalendarCell";
 import { useEffect, useState } from "react";
 import { useTreatingStore } from "../stores/treatingStore";
+import { useTreatingCalendar } from "../hooks/useTreatingCalendar";
 import { DebugControls } from "./DebugControls";
 import { NextTreatingInfo } from "./NextTreatingInfo";
 import "./TreatingCalendar.css";
@@ -12,6 +13,9 @@ interface TreatingCalendarProps {
 }
 
 export default function TreatingCalendar({ className }: TreatingCalendarProps) {
+    // 从 useTreatingCalendar 获取邮件发送方法
+    const { sendHostNotification, sendTeamNotification } = useTreatingCalendar();
+    
     // 直接从store获取状态和方法
     const {
         // State
@@ -54,8 +58,6 @@ export default function TreatingCalendar({ className }: TreatingCalendarProps) {
         setDebugDate,
         setDebugMode,
         fetchData,
-        sendHostNotification,
-        sendTeamNotification,
     } = useTreatingStore();
 
     // 添加 activeTab 状态
