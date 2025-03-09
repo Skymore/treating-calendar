@@ -493,6 +493,9 @@ export default function TreatingCalendar({ className }: TreatingCalendarProps) {
                                     <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Name
                                     </th>
+                                    <th className="hidden md:table-cell px-4 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Email
+                                    </th>
                                     <th className="px-4 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Past
                                     </th>
@@ -511,6 +514,11 @@ export default function TreatingCalendar({ className }: TreatingCalendarProps) {
                                             <td className="px-4 py-2 whitespace-nowrap">
                                                 <div className="font-medium text-sm text-gray-900">{person.name}</div>
                                             </td>
+                                            <td className="hidden md:table-cell px-4 py-2 whitespace-nowrap text-center">
+                                                <span className="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-md bg-gray-100 text-gray-700">
+                                                    {person.email}
+                                                </span>
+                                            </td>
                                             <td className="px-4 py-2 whitespace-nowrap text-center">
                                                 <span className="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
                                                     {person.hostingCount}
@@ -524,7 +532,7 @@ export default function TreatingCalendar({ className }: TreatingCalendarProps) {
                                             <td className="px-4 py-2 whitespace-nowrap text-center">
                                                 <button
                                                     onClick={() => removePerson(person.id)}
-                                                    className="text-red-600 hover:text-red-800 text-sm"
+                                                    className="px-2 py-1 text-xs rounded-md bg-red-100 text-red-700 hover:bg-red-200"
                                                 >
                                                     Remove
                                                 </button>
@@ -533,7 +541,7 @@ export default function TreatingCalendar({ className }: TreatingCalendarProps) {
                                     ))
                                 ) : (
                                     <tr>
-                                        <td colSpan={4} className="px-4 py-4 text-center text-sm text-gray-500">
+                                        <td colSpan={5} className="px-4 py-4 text-center text-sm text-gray-500">
                                             No team members found.
                                         </td>
                                     </tr>

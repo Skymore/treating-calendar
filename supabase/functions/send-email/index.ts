@@ -39,7 +39,7 @@ Deno.serve(async (req) => {
     console.log("API Key status:", RESEND_API_KEY ? "configured" : "not set or empty");
     
     // Get email data from request
-    const { to, subject, html, text, from = "noreply@email.ruit.me" } = await req.json();
+    const { to, subject, html, text, from = "Thursday Treating <noreply@email.ruit.me>" } = await req.json();
     
     // Add request data logs
     console.log("Request data:", { to, subject, fromField: from, hasHtml: !!html, hasText: !!text });

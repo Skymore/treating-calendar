@@ -233,7 +233,7 @@ serve(async (req) => {
           try {
             // Send email to host
             const hostEmailResult = await resend.emails.send({
-              from: 'Thursday Treating <onboarding@resend.dev>',
+              from: 'Thursday Treating <noreply@email.ruit.me>',
               to: treatingPerson.email,
               subject: hostSubject,
               html: hostHtmlContent,
@@ -416,7 +416,7 @@ serve(async (req) => {
           try {
             // Send email to team
             const teamEmailResult = await resend.emails.send({
-              from: 'Thursday Treating <onboarding@resend.dev>',
+              from: 'Thursday Treating <noreply@email.ruit.me>',
               to: teamEmails,
               subject: teamSubject,
               html: teamHtmlContent,
