@@ -400,7 +400,7 @@ export default function TreatingCalendar({ className }: TreatingCalendarProps) {
                     <div className="p-4 border-b flex flex-col md:flex-row justify-between items-start md:items-center gap-y-4">
                         <h2 className="text-xl font-bold text-gray-800">Team Members</h2>
 
-                        <div className="flex overflow-x-auto whitespace-nowrap pb-2 w-full md:w-auto">
+                        <div className="flex overflow-x-auto whitespace-nowrap pb-2 w-auto md:w-auto">
                             <span className="text-gray-700 text-sm mr-2 self-center">Schedule by:</span>
                             <button
                                 onClick={() => changeSortType(SortType.ByName)}
