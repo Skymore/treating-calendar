@@ -21,6 +21,7 @@ export function DebugControls({ debugDate, setDebugDate, getMonthName, fetchData
                                 const newYear = parseInt(e.target.value);
                                 const newDate = new CalendarDate(newYear, debugDate.month, debugDate.day);
                                 setDebugDate(newDate);
+                                fetchData();
                             }}
                         >
                             {Array.from({ length: 10 }, (_, i) => debugDate.year - 5 + i).map(year => (
@@ -51,6 +52,7 @@ export function DebugControls({ debugDate, setDebugDate, getMonthName, fetchData
                                 const newDay = parseInt(e.target.value);
                                 const newDate = new CalendarDate(debugDate.year, debugDate.month, newDay);
                                 setDebugDate(newDate);
+                                fetchData();
                             }}
                         >
                             {Array.from({ length: new Date(debugDate.year, debugDate.month, 0).getDate() }, (_, i) => i + 1).map(day => (

@@ -110,7 +110,11 @@ export const useTreatingStore = create<TreatingState>((set, get) => ({
         set((state) => ({
             selectedDates: typeof selectedDates === "function" ? selectedDates(state.selectedDates) : selectedDates,
         })),
-    setDebugDate: (debugDate) => set({ debugDate }),
+    setDebugDate: (debugDate) => set({ 
+        debugDate, 
+        currentMonth: debugDate.month, 
+        currentYear: debugDate.year 
+    }),
     setDebugMode: (debugMode) => set({ debugMode }),
     setNewName: (newName) => set({ newName }),
     setNewEmail: (newEmail) => set({ newEmail }),
