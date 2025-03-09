@@ -7,7 +7,7 @@
 
 // Setup type definitions for built-in Supabase Runtime APIs
 import "jsr:@supabase/functions-js/edge-runtime.d.ts"
-import { Resend } from "npm:resend@0.7.0"
+import { Resend } from "npm:resend@4.1.2"
 
 // Initialize Resend with your API key
 // In production, use environment variables for the API key
@@ -39,7 +39,7 @@ Deno.serve(async (req) => {
     console.log("API Key status:", RESEND_API_KEY ? "configured" : "not set or empty");
     
     // Get email data from request
-    const { to, subject, html, text, from = "noreply@resend.dev" } = await req.json();
+    const { to, subject, html, text, from = "noreply@email.ruit.me" } = await req.json();
     
     // Add request data logs
     console.log("Request data:", { to, subject, fromField: from, hasHtml: !!html, hasText: !!text });
