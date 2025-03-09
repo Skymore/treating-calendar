@@ -19,6 +19,7 @@ The project utilizes the following technology stack:
 
 - **前端框架 | Frontend Framework**: React + TypeScript，利用强类型提高代码质量和开发效率 (leveraging strong typing to improve code quality and development efficiency)
 - **构建工具 | Build Tool**: Vite，享受其快速的开发和构建体验 (enjoying its fast development and build experience)
+- **状态管理 | State Management**: Zustand，轻量级且易用的状态管理库 (lightweight and easy-to-use state management library)
 - **后端数据库 | Backend Database**: Supabase，作为Backend-as-a-Service解决方案 (as a Backend-as-a-Service solution)
 - **边缘计算 | Edge Computing**: Edge Functions，在CDN边缘节点运行无服务器函数，降低延迟，提高性能 (serverless functions running at CDN edge nodes, reducing latency and improving performance)
 - **样式处理 | Styling**: Tailwind CSS，实现快速响应式设计 (implementing quick responsive design)
@@ -126,6 +127,47 @@ The project uses Supabase as the backend, with four main tables designed:
 2. `host_schedule`表：存储请客安排日程 (stores treating schedule)
 3. `teams`表：存储团队信息 (stores team information)
 4. `email_templates`表：存储可自定义的邮件模板 (stores customizable email templates)
+
+### 5. 状态管理 - Zustand | State Management - Zustand
+
+项目使用Zustand作为状态管理解决方案，相比Redux等传统方案，Zustand提供了更简洁的API和更少的模板代码：
+
+The project uses Zustand as the state management solution. Compared to traditional solutions like Redux, Zustand provides a more concise API and less boilerplate code:
+
+```typescript
+// 创建store
+export const useTreatingStore = create<TreatingState>((set, get) => ({
+  // 状态定义
+  persons: [],
+  schedule: [],
+  // ...其他状态
+  
+  // 状态更新方法
+  setPersons: (persons) => set((state) => ({
+    persons: typeof persons === "function" ? persons(state.persons) : persons,
+  })),
+  
+  // 业务逻辑方法
+  addPerson: async () => {
+    // 使用get()获取当前状态
+    const { newName, newEmail, persons, setPersons } = get();
+    // ...业务逻辑实现
+  }
+}));
+```
+
+Zustand的主要优势包括：
+
+The main advantages of Zustand include:
+
+1. **简洁的API** | **Concise API**: 无需Provider包装，直接在组件中使用hook (no Provider wrapper needed, use hooks directly in components)
+2. **类型安全** | **Type Safety**: 与TypeScript完美集成，提供完整的类型推断 (perfect integration with TypeScript, providing complete type inference)
+3. **中间件支持** | **Middleware Support**: 支持中间件扩展功能，如持久化、日志等 (supports middleware extensions such as persistence, logging, etc.)
+4. **选择性更新** | **Selective Updates**: 组件只在使用的状态变化时重新渲染 (components only re-render when the state they use changes)
+
+在本项目中，Zustand管理了所有核心状态，包括人员列表、日程安排、UI状态等，并提供了一系列业务逻辑方法，如添加/删除人员、生成日程、交换日程等。这种集中式的状态管理使得组件代码更加简洁，业务逻辑更加清晰。
+
+In this project, Zustand manages all core states, including personnel lists, schedules, UI states, etc., and provides a series of business logic methods such as adding/removing personnel, generating schedules, swapping schedules, etc. This centralized state management makes component code more concise and business logic clearer.
 
 ## 部署与运维 | Deployment and Operations
 
