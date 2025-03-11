@@ -35,10 +35,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const getRedirectUrl = () => {
     // 在生产环境中始终使用固定的URL
     if (import.meta.env.PROD) {
-      return 'https://treating.ruit.me';
+      return import.meta.env.VITE_APP_URL;
     }
-    // 在开发环境中使用环境变量或当前URL
-    return import.meta.env.VITE_APP_URL || window.location.origin;
+    if (import.meta.env.DEV) {
+      return import.meta.env.VITE_APP_DEV_URL;
+    }
+    return window.location.origin;
   };
 
   useEffect(() => {
