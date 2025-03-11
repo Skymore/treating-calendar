@@ -40,24 +40,47 @@ export function useTeamInfo() {
     }
   };
 
-  // Toggle notifications setting
-  const toggleNotifications = async (enabled: boolean) => {
+  // Toggle team notifications setting
+  const toggleTeamNotifications = async (enabled: boolean) => {
     const userId = getUserId();
     setLoading(true);
     try {
       const { error } = await supabase
         .from('teams')
-        .update({ notificationsEnabled: enabled })
+        .update({ teamNotificationsEnabled: enabled })
         .eq('userId', userId);
 
       if (error) throw error;
 
       // Update local state
-      setTeamInfo(prev => prev ? { ...prev, notificationsEnabled: enabled } : null);
-      console.log(`Automatic notifications ${enabled ? 'enabled' : 'disabled'} for team: ${userId}`);
+      setTeamInfo(prev => prev ? { ...prev, teamNotificationsEnabled: enabled } : null);
+      console.log(`Automatic team notifications ${enabled ? 'enabled' : 'disabled'} for team: ${userId}`);
     } catch (err) {
-      console.error('Failed to update notification settings:', err);
-      setError('Failed to update notification settings, please try again later');
+      console.error('Failed to update team notification settings:', err);
+      setError('Failed to update team notification settings, please try again later');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Toggle host notifications setting
+  const toggleHostNotifications = async (enabled: boolean) => {
+    const userId = getUserId();
+    setLoading(true);
+    try {
+      const { error } = await supabase
+        .from('teams')
+        .update({ hostNotificationsEnabled: enabled })
+        .eq('userId', userId);
+
+      if (error) throw error;
+
+      // Update local state
+      setTeamInfo(prev => prev ? { ...prev, hostNotificationsEnabled: enabled } : null);
+      console.log(`Automatic host notifications ${enabled ? 'enabled' : 'disabled'} for team: ${userId}`);
+    } catch (err) {
+      console.error('Failed to update host notification settings:', err);
+      setError('Failed to update host notification settings, please try again later');
     } finally {
       setLoading(false);
     }
@@ -91,7 +114,8 @@ export function useTeamInfo() {
           userId,
           teamName,
           createdAt: new Date().toISOString(),
-          notificationsEnabled: false // Default to disabled for new teams
+          teamNotificationsEnabled: false, // Default to disabled for new teams
+          hostNotificationsEnabled: false  // Default to disabled for new teams
         };
 
         const { error } = await supabase
@@ -108,7 +132,8 @@ export function useTeamInfo() {
           userId,
           teamName,
           createdAt: prev?.createdAt || new Date().toISOString(),
-          notificationsEnabled: prev?.notificationsEnabled !== undefined ? prev.notificationsEnabled : false
+          teamNotificationsEnabled: prev?.teamNotificationsEnabled !== undefined ? prev.teamNotificationsEnabled : false,
+          hostNotificationsEnabled: prev?.hostNotificationsEnabled !== undefined ? prev.hostNotificationsEnabled : false
         };
       });
     } catch (err) {
@@ -137,6 +162,7 @@ export function useTeamInfo() {
     error,
     saveTeamInfo,
     fetchTeamInfo,
-    toggleNotifications
+    toggleTeamNotifications,
+    toggleHostNotifications
   };
 } 

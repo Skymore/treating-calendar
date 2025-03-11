@@ -1,9 +1,9 @@
-# Setting Up Weekly Monday Email Notifications
-# 设置每周一自动邮件通知
+# Setting Up Weekly Wednesday Email Notifications
+# 设置每周三自动邮件通知
 
-This document explains how to set up automatic team treating reminder emails that are sent every Monday morning at 8:00 AM.
+This document explains how to set up automatic team treating reminder emails that are sent every Wednesday morning at 9:00 AM.
 
-本文档说明如何设置每周一早晨8点自动发送团队treating提醒邮件。
+本文档说明如何设置每周三早晨9点自动发送团队treating提醒邮件。
 
 ## Feature Overview
 ## 功能概述
@@ -12,11 +12,11 @@ This functionality uses Supabase Edge Functions and Vercel Cron Jobs to implemen
 
 该功能使用Supabase Edge Functions和Vercel Cron Jobs来实现定时发送邮件的功能：
 
-1. Vercel Cron Job triggers every Monday morning at 8:00 AM
+1. Vercel Cron Job triggers every Wednesday morning at 9:00 AM
 2. The Cron Job calls the Supabase Edge Function
 3. The Edge Function queries treating information for all teams and sends email notifications
 
-1. 每周一早晨8点触发Vercel Cron Job
+1. 每周三早晨9点触发Vercel Cron Job
 2. Cron Job调用Supabase Edge Function
 3. Edge Function查询所有团队的treating信息，并发送邮件通知
 
@@ -24,6 +24,7 @@ This functionality uses Supabase Edge Functions and Vercel Cron Jobs to implemen
 ## 主要特性
 
 - **Dual Notifications**: Sends notifications to both the treating host and all team members
+- **Separate Controls**: Teams can enable/disable host and team notifications independently
 - **Template Support**: Uses custom email templates for each team
 - **Duplicate Prevention**: Records notification status to avoid sending duplicates
 - **Test Mode**: Allows testing notifications without updating the database
@@ -31,6 +32,7 @@ This functionality uses Supabase Edge Functions and Vercel Cron Jobs to implemen
 - **Notification Control**: Teams can enable or disable automatic notifications in Settings
 
 - **双重通知**：同时向treating主持人和所有团队成员发送通知
+- **独立控制**：团队可以独立启用/禁用主持人和团队成员的通知
 - **模板支持**：使用团队自定义的邮件模板
 - **避免重复**：记录通知状态，避免重复发送
 - **测试模式**：可以在不更新数据库的情况下测试通知
@@ -46,11 +48,13 @@ By default, automatic notifications are **disabled** for all teams. To enable no
 
 1. Go to the Settings panel in the application
 2. Click on the "Notification Settings" tab
-3. Toggle the switch to enable automatic notifications for your team
+3. Toggle the switches to enable automatic notifications for your team
+   - You can enable/disable host notifications and team notifications separately
 
 1. 在应用程序中进入设置面板
 2. 点击"Notification Settings"选项卡
 3. 切换开关以启用团队的自动通知
+   - 您可以分别启用/禁用主持人通知和团队成员通知
 
 Even with automatic notifications disabled, you can still manually send notifications from the calendar page.
 
@@ -118,9 +122,9 @@ Add the following environment variables in the Environment Variables section of 
 1. 提交代码到你的Git仓库
 2. 部署到Vercel
 
-After deployment, Vercel will automatically set up the Cron Job according to the configuration in `vercel.json`, which will trigger every Monday morning at 8:00 AM.
+After deployment, Vercel will automatically set up the Cron Job according to the configuration in `vercel.json`, which will trigger every Wednesday morning at 9:00 AM.
 
-部署后，Vercel会根据`vercel.json`中的配置自动设置Cron Job，每周一早晨8点触发。
+部署后，Vercel会根据`vercel.json`中的配置自动设置Cron Job，每周三早晨9点触发。
 
 ## Testing
 ## 测试

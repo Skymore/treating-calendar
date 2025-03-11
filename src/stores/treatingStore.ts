@@ -346,7 +346,7 @@ export const useTreatingStore = create<TreatingState>((set, get) => ({
         }
 
         // Generate schedules for the next 6 months
-        for (let i = 0; i < 26; i++) {
+        for (let i = 0; i < 52; i++) {
             // About 6 months, once a week
             const dateStr = currentDate.toString();
             const personnelId = sortedPersons[personIndex].id;

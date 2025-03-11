@@ -62,6 +62,9 @@ export default function TreatingCalendar({ className }: TreatingCalendarProps) {
 
     // 添加 activeTab 状态
     const [activeTab, setActiveTab] = useState<"calendar" | "people">("calendar");
+    
+    // 添加视图类型状态
+    const [viewType, setViewType] = useState<"month" | "year">("month");
 
     // 获取今天日期的辅助函数
     const getToday = () => {
@@ -226,7 +229,7 @@ export default function TreatingCalendar({ className }: TreatingCalendarProps) {
                 <div className="bg-white rounded-lg shadow-sm overflow-hidden">
                     <div className="p-4 flex flex-col md:flex-row justify-between items-start md:items-center border-b gap-y-4">
                         <h2 className="text-xl font-bold text-gray-800">
-                            {getMonthName(currentMonth)} {currentYear}
+                            {viewType === "month" ? `${getMonthName(currentMonth)} ${currentYear}` : `${currentYear}`}
                         </h2>
 
                         <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
@@ -284,6 +287,13 @@ export default function TreatingCalendar({ className }: TreatingCalendarProps) {
                             </div>
 
                             <button
+                                onClick={() => setViewType(viewType === "month" ? "year" : "month")}
+                                className="px-3 py-2 rounded-md bg-gray-100 text-gray-700 hover:bg-gray-200"
+                            >
+                                {viewType === "month" ? "Year View" : "Month View"}
+                            </button>
+
+                            <button
                                 onClick={() => {
                                     setSwapMode(!swapMode);
                                     setSelectedDates([]);
@@ -306,32 +316,97 @@ export default function TreatingCalendar({ className }: TreatingCalendarProps) {
                         </div>
                     )}
 
-                    {/* Calendar grid */}
-                    <div className="grid grid-cols-7 border-b">
-                        {/* Weekday headers */}
-                        {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day, i) => (
-                            <div
-                                key={day}
-                                className={`p-2 text-center text-xs md:text-sm font-medium ${
-                                    i === 4 ? "bg-blue-50 text-blue-800" : "text-gray-500"
-                                }`}
-                            >
-                                {day}
+                    {/* 月视图 */}
+                    {viewType === "month" && (
+                        <>
+                            {/* Calendar grid */}
+                            <div className="grid grid-cols-7 border-b">
+                                {/* Weekday headers */}
+                                {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day, i) => (
+                                    <div
+                                        key={day}
+                                        className={`p-2 text-center text-xs md:text-sm font-medium ${
+                                            i === 4 ? "bg-blue-50 text-blue-800" : "text-gray-500"
+                                        }`}
+                                    >
+                                        {day}
+                                    </div>
+                                ))}
                             </div>
-                        ))}
-                    </div>
 
-                    {/* Calendar days */}
-                    <div className="grid grid-cols-7 auto-rows-fr">
-                        {calendarDays.map((date, i) => (
-                            <div
-                                key={`${date.year}-${date.month}-${date.day}-${i}`}
-                                className="border-b border-r p-1 min-h-[60px] md:min-h-[80px]"
-                            >
-                                {renderCalendarCell(date)}
+                            {/* Calendar days */}
+                            <div className="grid grid-cols-7 auto-rows-fr">
+                                {calendarDays.map((date, i) => (
+                                    <div
+                                        key={`${date.year}-${date.month}-${date.day}-${i}`}
+                                        className="border-b border-r p-1 min-h-[60px] md:min-h-[80px]"
+                                    >
+                                        {renderCalendarCell(date)}
+                                    </div>
+                                ))}
                             </div>
-                        ))}
-                    </div>
+                        </>
+                    )}
+
+                    {/* 年视图 */}
+                    {viewType === "year" && (
+                        <div className="p-4">
+                            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                                {Array.from({ length: 12 }, (_, i) => i + 1).map((month) => {
+                                    // 获取当月所有的星期四
+                                    const thursdays: CalendarDate[] = [];
+                                    
+                                    // 计算当月的天数
+                                    const daysInMonth = new Date(currentYear, month, 0).getDate();
+                                    
+                                    // 遍历当月的每一天，找出所有星期四
+                                    for (let day = 1; day <= daysInMonth; day++) {
+                                        const date = new CalendarDate(currentYear, month, day);
+                                        // 检查是否是星期四
+                                        if (isThursday(date)) {
+                                            thursdays.push(date);
+                                        }
+                                    }
+
+                                    return (
+                                        <div 
+                                            key={month} 
+                                            className={`border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow ${
+                                                month === currentMonth ? 'border-blue-500 bg-blue-50' : 'border-gray-200'
+                                            }`}
+                                            onClick={() => {
+                                                setCurrentMonth(month);
+                                                setViewType("month");
+                                            }}
+                                        >
+                                            <div className="bg-gray-50 p-3 border-b">
+                                                <h3 className="font-medium text-gray-800">{getMonthName(month)}</h3>
+                                            </div>
+                                            <div className="p-3">
+                                                {thursdays.length > 0 ? (
+                                                    <ul className="space-y-2">
+                                                        {thursdays.map((thursday) => {
+                                                            const person = getPersonForDate(thursday);
+                                                            return (
+                                                                <li key={thursday.toString()} className="text-sm">
+                                                                    <span className="text-gray-600">{thursday.day}: </span>
+                                                                    <span className="font-medium text-gray-800">
+                                                                        {person ? person.name : "Unassigned"}
+                                                                    </span>
+                                                                </li>
+                                                            );
+                                                        })}
+                                                    </ul>
+                                                ) : (
+                                                    <p className="text-sm text-gray-500">No Thursdays in this month</p>
+                                                )}
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    )}
 
                     {/* Legend */}
                     <div className="p-4 border-t">

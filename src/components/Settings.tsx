@@ -43,7 +43,8 @@ export default function Settings({
     teamInfo,
     loading: teamLoading,
     error: teamError,
-    toggleNotifications
+    toggleTeamNotifications,
+    toggleHostNotifications
   } = useTeamInfo();
 
   // Load templates from database on component mount
@@ -166,9 +167,14 @@ export default function Settings({
     }
   };
 
-  // Handle notification toggle
-  const handleNotificationToggle = async (enabled: boolean) => {
-    await toggleNotifications(enabled);
+  // Handle team notification toggle
+  const handleTeamNotificationToggle = async (enabled: boolean) => {
+    await toggleTeamNotifications(enabled);
+  };
+
+  // Handle host notification toggle
+  const handleHostNotificationToggle = async (enabled: boolean) => {
+    await toggleHostNotifications(enabled);
   };
 
   // If settings not shown, don't render anything
@@ -387,7 +393,7 @@ export default function Settings({
                 <div className="mb-4 p-3 md:p-4 bg-blue-50 border border-blue-100 rounded-md">
                   <h4 className="font-medium text-blue-800 mb-2 text-sm">About Automatic Notifications</h4>
                   <p className="text-xs md:text-sm text-blue-700">
-                    Our system sends automatic notifications every Monday at 8:00 AM to remind the treating person 
+                    Our system sends automatic notifications every Wednesday at 9:00 AM to remind the treating person 
                     and all team members about the upcoming Thursday treating session.
                     You can control whether this feature is enabled below.
                   </p>
@@ -396,23 +402,50 @@ export default function Settings({
                 <div className="border rounded-lg p-3 md:p-4 bg-gray-50 mb-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <h4 className="font-medium text-sm">Automatic Notifications</h4>
+                      <h4 className="font-medium text-sm">Team Notifications</h4>
                       <p className="text-xs md:text-sm text-gray-600 mt-1">
-                        {teamInfo?.notificationsEnabled 
-                          ? 'Automatic notifications are enabled. The system will send notifications every Monday.' 
-                          : 'Automatic notifications are disabled. The system will not send automatic notifications.'}
+                        {teamInfo?.teamNotificationsEnabled 
+                          ? 'Automatic team notifications are enabled. The system will send notifications to all team members every Wednesday.' 
+                          : 'Automatic team notifications are disabled. The system will not send automatic notifications to team members.'}
                       </p>
                     </div>
                     <div className="flex items-center">
                       <span className="mr-2 text-xs md:text-sm text-gray-600">
-                        {teamInfo?.notificationsEnabled ? 'On' : 'Off'}
+                        {teamInfo?.teamNotificationsEnabled ? 'On' : 'Off'}
                       </span>
                       <label className="relative inline-flex items-center cursor-pointer">
                         <input 
                           type="checkbox" 
                           className="sr-only peer" 
-                          checked={teamInfo?.notificationsEnabled === true}
-                          onChange={(e) => handleNotificationToggle(e.target.checked)}
+                          checked={teamInfo?.teamNotificationsEnabled === true}
+                          onChange={(e) => handleTeamNotificationToggle(e.target.checked)}
+                        />
+                        <div className="w-9 h-5 md:w-11 md:h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 md:after:h-5 md:after:w-5 after:transition-all peer-checked:bg-blue-500"></div>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="border rounded-lg p-3 md:p-4 bg-gray-50 mb-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h4 className="font-medium text-sm">Host Notifications</h4>
+                      <p className="text-xs md:text-sm text-gray-600 mt-1">
+                        {teamInfo?.hostNotificationsEnabled 
+                          ? 'Automatic host notifications are enabled. The system will send notifications to the treating host every Wednesday.' 
+                          : 'Automatic host notifications are disabled. The system will not send automatic notifications to the treating host.'}
+                      </p>
+                    </div>
+                    <div className="flex items-center">
+                      <span className="mr-2 text-xs md:text-sm text-gray-600">
+                        {teamInfo?.hostNotificationsEnabled ? 'On' : 'Off'}
+                      </span>
+                      <label className="relative inline-flex items-center cursor-pointer">
+                        <input 
+                          type="checkbox" 
+                          className="sr-only peer" 
+                          checked={teamInfo?.hostNotificationsEnabled === true}
+                          onChange={(e) => handleHostNotificationToggle(e.target.checked)}
                         />
                         <div className="w-9 h-5 md:w-11 md:h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 md:after:h-5 md:after:w-5 after:transition-all peer-checked:bg-blue-500"></div>
                       </label>

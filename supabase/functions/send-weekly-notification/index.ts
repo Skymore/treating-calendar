@@ -54,7 +54,7 @@ serve(async (req) => {
     // Get all teams
     const { data: teams, error: teamsError } = await supabase
       .from('teams')
-      .select('userId, teamName, notificationsEnabled');
+      .select('userId, teamName, teamNotificationsEnabled, hostNotificationsEnabled');
     
     if (teamsError) {
       throw new Error(`Error fetching teams: ${teamsError.message}`);
@@ -71,9 +71,9 @@ serve(async (req) => {
       try {
         console.log(`Processing team: ${team.userId} (${team.teamName || 'Unknown'})`);
         
-        // Skip teams that have disabled notifications (unless in test mode or force resend)
-        if (team.notificationsEnabled === false && !isTest && !forceResend) {
-          console.log(`Team ${team.userId} has disabled notifications, skipping`);
+        // Check if both notifications are disabled (unless in test mode or force resend)
+        if (team.teamNotificationsEnabled === false && team.hostNotificationsEnabled === false && !isTest && !forceResend) {
+          console.log(`Team ${team.userId} has disabled all notifications, skipping`);
           continue;
         }
         
@@ -115,8 +115,9 @@ serve(async (req) => {
         // Send host notification (to the treating person)
         // ------------------------------------------------------------------
         
-        // Check if host notification needs to be sent
-        if (!scheduleData.hostNotified || forceResend) {
+        // Check if host notification needs to be sent and is enabled
+        if ((team.hostNotificationsEnabled !== false || isTest || forceResend) && 
+            (!scheduleData.hostNotified || forceResend)) {
           console.log(`Sending host notification to ${treatingPerson.name}`);
           
           // Get host notification template
@@ -267,15 +268,20 @@ serve(async (req) => {
             });
           }
         } else {
-          console.log(`Host ${treatingPerson.name} already notified`);
+          if (team.hostNotificationsEnabled === false && !isTest && !forceResend) {
+            console.log(`Host notifications disabled for team ${team.userId}, skipping`);
+          } else {
+            console.log(`Host ${treatingPerson.name} already notified`);
+          }
         }
 
         // ------------------------------------------------------------------
         // Send team notification (to all team members)
         // ------------------------------------------------------------------
         
-        // Check if team notification needs to be sent
-        if (!scheduleData.teamNotified || forceResend) {
+        // Check if team notification needs to be sent and is enabled
+        if ((team.teamNotificationsEnabled !== false || isTest || forceResend) && 
+            (!scheduleData.teamNotified || forceResend)) {
           console.log(`Preparing to send team notification`);
           
           // Get team notification template
@@ -450,7 +456,11 @@ serve(async (req) => {
             });
           }
         } else {
-          console.log(`Team members already notified`);
+          if (team.teamNotificationsEnabled === false && !isTest && !forceResend) {
+            console.log(`Team notifications disabled for team ${team.userId}, skipping`);
+          } else {
+            console.log(`Team already notified`);
+          }
         }
         
       } catch (teamError) {

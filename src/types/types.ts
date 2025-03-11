@@ -3,7 +3,8 @@ export interface TeamInfo {
   userId: string;
   teamName: string;
   createdAt: string;
-  notificationsEnabled?: boolean; // Controls whether automatic notifications are enabled (default: false)
+  teamNotificationsEnabled?: boolean; // Controls whether automatic team notifications are enabled (default: false)
+  hostNotificationsEnabled?: boolean; // Controls whether automatic host notifications are enabled (default: false)
 }
 
 export interface Personnel {
