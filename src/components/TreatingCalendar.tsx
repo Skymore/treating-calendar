@@ -547,7 +547,7 @@ export default function TreatingCalendar({ className }: TreatingCalendarProps) {
                                             ? "bg-blue-100 text-blue-700"
                                             : "bg-gray-100 text-gray-700"
                                     } ${(!user || !isCreator) ? "opacity-50 cursor-not-allowed" : ""}`}
-                                    title="Generate 12-month schedule ordered by name"
+                                    title={isCreator ? "Generate 12-month schedule ordered by name" : "Only team creator can generate schedule"}
                                     disabled={!user || !isCreator}
                                 >
                                     Name
@@ -559,7 +559,7 @@ export default function TreatingCalendar({ className }: TreatingCalendarProps) {
                                             ? "bg-blue-100 text-blue-700"
                                             : "bg-gray-100 text-gray-700"
                                     } ${(!user || !isCreator) ? "opacity-50 cursor-not-allowed" : ""}`}
-                                    title="Generate 12-month schedule with randomized order"
+                                    title={isCreator ? "Generate 12-month schedule with randomized order" : "Only team creator can generate schedule"}
                                     disabled={!user || !isCreator}
                                 >
                                     Random
@@ -571,7 +571,7 @@ export default function TreatingCalendar({ className }: TreatingCalendarProps) {
                                             ? "bg-blue-100 text-blue-700"
                                             : "bg-gray-100 text-gray-700"
                                     } ${(!user || !isCreator) ? "opacity-50 cursor-not-allowed" : ""}`}
-                                    title="Generate 12-month schedule ordered by when members were added"
+                                    title={isCreator ? "Generate 12-month schedule ordered by when members were added" : "Only team creator can generate schedule"}
                                     disabled={!user || !isCreator}
                                 >
                                     Order
@@ -593,6 +593,7 @@ export default function TreatingCalendar({ className }: TreatingCalendarProps) {
                                     (!user || !isCreator) ? "opacity-50 cursor-not-allowed" : ""
                                 }`}
                                 disabled={!user || !isCreator}
+                                title={!isCreator ? "Only team creator can add team members" : "Add team member"}
                             >
                                 {newPersonFormOpen ? "Cancel" : "Add Person"}
                             </button>
