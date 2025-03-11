@@ -23,6 +23,7 @@ export default function ZustandTest() {
         hostingCount: 0,
         lastHosted: '',
         hostOffset: 0,
+        createdAt: new Date().toISOString(),
       };
       return [...prevPersons, testPerson];
     });
