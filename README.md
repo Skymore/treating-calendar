@@ -11,16 +11,26 @@ A modern React application to manage team's weekly treating schedule, focusing o
 - **Email Notifications**: Send reminders to team members via Resend API
 - **Fair Distribution System**: Uses hostOffset mechanism to ensure fairness when new members join 
 - **Team Information Management**: Create and manage team information
+- **User Authentication**: Secure login and registration with Supabase Auth
 - **Debug Mode**: Special debug controls for testing
 
 ## Tech Stack
 
 - React + TypeScript
 - Vite as build tool
-- Supabase for backend database
+- Supabase for backend database and authentication
 - Tailwind CSS for styling
 - @internationalized/date for date handling
 - Resend API for email notifications
+
+## Authentication
+
+The application uses Supabase Authentication for user management:
+
+- Email/password authentication
+- Password reset functionality
+- Protected routes requiring authentication
+- User profile management
 
 ## Database Structure
 

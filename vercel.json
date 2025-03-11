@@ -4,5 +4,18 @@
       "path": "/api/trigger-weekly-notification",
       "schedule": "0 9 * * 3"
     }
+  ],
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "headers": [
+    {
+      "source": "/.well-known/(.*)",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        }
+      ]
+    }
   ]
 } 

@@ -9,6 +9,9 @@ import { useTeamInfo } from './hooks/useTeamInfo';
 import ZustandTest from './components/ZustandTest';
 import { useTreatingStore } from './stores/treatingStore';
 import { NotificationProvider } from './contexts/NotificationContext';
+import { useAuth } from './contexts/AuthContext';
+import Auth from './components/Auth';
+import UserProfile from './components/UserProfile';
 
 export default function App() {
   // 使用单一状态来控制当前打开的tab
@@ -23,6 +26,9 @@ export default function App() {
     schedule,
     fetchData,
   } = useTreatingStore();
+
+  // 获取认证状态
+  const { user, loading: authLoading } = useAuth();
 
   // 切换tab的函数
   const toggleTab = (tab: 'settings' | 'emailTest' | 'teamInfo' | 'zustandTest') => {
@@ -46,9 +52,32 @@ export default function App() {
     }
   }, []);
 
+  // If authentication is loading, show loading state
+  if (authLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // If user is not logged in, show login interface
+  if (!user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+        <Auth />
+      </div>
+    );
+  }
+
   return (
     <NotificationProvider>
       <div className="container mx-auto p-4 max-w-6xl">
+        <UserProfile />
+        
         <header className="mb-6 bg-white shadow-sm rounded-lg p-4">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
             <div className="mb-4 md:mb-0">
