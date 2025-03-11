@@ -1,4 +1,5 @@
 // API handler that will be called by Vercel Cron
+// This endpoint is triggered every Wednesday at 9:00 AM to send treating notifications
 export default async function handler(req, res) {
   try {
     // Prevent non-Cron calls (simple validation)

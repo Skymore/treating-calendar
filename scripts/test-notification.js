@@ -1,5 +1,5 @@
 /**
- * Script for manually testing the Monday automatic notification feature
+ * Script for manually testing the Wednesday automatic notification feature
  * Usage: node scripts/test-notification.js
  */
 
@@ -45,7 +45,7 @@ async function triggerNotification() {
   // Check if force resend is enabled
   const forceResend = process.argv.includes('--force');
   
-  console.log('Testing Monday automatic notification...');
+  console.log('Testing Wednesday automatic notification...');
   console.log(`Using Supabase project: ${SUPABASE_URL}`);
   if (forceResend) {
     console.log('Force resend mode enabled');
