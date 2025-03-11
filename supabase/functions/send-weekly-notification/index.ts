@@ -116,7 +116,7 @@ serve(async (req) => {
         // ------------------------------------------------------------------
         
         // Check if host notification needs to be sent and is enabled
-        if ((team.hostNotificationsEnabled !== false || isTest || forceResend) && 
+        if ((team.hostNotificationsEnabled !== false || forceResend) && 
             (!scheduleData.hostNotified || forceResend)) {
           console.log(`Sending host notification to ${treatingPerson.name}`);
           
@@ -280,7 +280,7 @@ serve(async (req) => {
         // ------------------------------------------------------------------
         
         // Check if team notification needs to be sent and is enabled
-        if ((team.teamNotificationsEnabled !== false || isTest || forceResend) && 
+        if ((team.teamNotificationsEnabled !== false || forceResend) && 
             (!scheduleData.teamNotified || forceResend)) {
           console.log(`Preparing to send team notification`);
           
