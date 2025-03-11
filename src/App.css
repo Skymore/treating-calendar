@@ -80,7 +80,7 @@ p {
   /* 移动端按钮组样式 */
   button {
     width: auto;
-    min-width: 80px;
+    min-width: 60px;
   }
 }
 

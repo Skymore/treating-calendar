@@ -488,7 +488,7 @@ export default function TreatingCalendar({ className }: TreatingCalendarProps) {
                                             ? "bg-blue-100 text-blue-700"
                                             : "bg-gray-100 text-gray-700"
                                     }`}
-                                    title="Generate 6-month schedule ordered by name"
+                                    title="Generate 12-month schedule ordered by name"
                                 >
                                     Name
                                 </button>
@@ -502,7 +502,7 @@ export default function TreatingCalendar({ className }: TreatingCalendarProps) {
                                             ? "bg-blue-100 text-blue-700"
                                             : "bg-gray-100 text-gray-700"
                                     }`}
-                                    title="Generate 6-month schedule with randomized order"
+                                    title="Generate 12-month schedule with randomized order"
                                 >
                                     Random
                                 </button>
@@ -516,7 +516,7 @@ export default function TreatingCalendar({ className }: TreatingCalendarProps) {
                                             ? "bg-blue-100 text-blue-700"
                                             : "bg-gray-100 text-gray-700"
                                     }`}
-                                    title="Generate 6-month schedule ordered by when members were added"
+                                    title="Generate 12-month schedule ordered by when members were added"
                                 >
                                     Order
                                 </button>
