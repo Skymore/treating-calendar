@@ -8,7 +8,8 @@ interface AuthProps {
 
 export default function Auth({ onClose }: AuthProps) {
   const [loading, setLoading] = useState<'google' | 'github' | 'azure' | null>(null);
-  const { signInWithGoogle, signInWithGithub, signInWithAzure } = useAuth();
+  // const { signInWithGoogle, signInWithGithub, signInWithAzure } = useAuth();
+  const { signInWithGoogle, signInWithGithub } = useAuth();
 
   const handleGoogleSignIn = async () => {
     try {
@@ -34,17 +35,17 @@ export default function Auth({ onClose }: AuthProps) {
     }
   };
 
-  const handleAzureSignIn = async () => {
-    try {
-      setLoading('azure');
-      const { error } = await signInWithAzure();
-      if (error) throw error;
-      // Success message will be shown after redirect back
-    } catch (error: any) {
-      showNotification(error.message || 'Failed to sign in with Microsoft', 'error');
-      setLoading(null);
-    }
-  };
+  // const handleAzureSignIn = async () => {
+  //   try {
+  //     setLoading('azure');
+  //     const { error } = await signInWithAzure();
+  //     if (error) throw error;
+  //     // Success message will be shown after redirect back
+  //   } catch (error: any) {
+  //     showNotification(error.message || 'Failed to sign in with Microsoft', 'error');
+  //     setLoading(null);
+  //   }
+  // };
 
   return (
     <div className="fixed inset-0 bg-gray-900 bg-opacity-75 z-50 flex items-center justify-center">
