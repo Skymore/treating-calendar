@@ -475,30 +475,43 @@ export default function TreatingCalendar({ className }: TreatingCalendarProps) {
                     <div className="p-4 border-b flex flex-col md:flex-row justify-between items-start md:items-center gap-y-4">
                         <h2 className="text-xl font-bold text-gray-800">Team Members</h2>
 
-                        <div className="flex overflow-x-auto whitespace-nowrap pb-2 w-auto md:w-auto">
-                            <span className="text-gray-700 text-sm mr-2 self-center">Schedule by:</span>
-                            <button
-                                onClick={() => changeSortType(SortType.ByName)}
-                                className={`px-2 py-1.5 md:px-3 md:py-2 rounded-md text-xs md:text-sm mr-2 ${
-                                    sortType === SortType.ByName
-                                        ? "bg-blue-100 text-blue-700"
-                                        : "bg-gray-100 text-gray-700"
-                                }`}
-                                title="Generate 6-month schedule ordered by name"
-                            >
-                                Name
-                            </button>
-                            <button
-                                onClick={() => changeSortType(SortType.Random)}
-                                className={`px-2 py-1.5 md:px-3 md:py-2 rounded-md text-xs md:text-sm mr-2 ${
-                                    sortType === SortType.Random
-                                        ? "bg-blue-100 text-blue-700"
-                                        : "bg-gray-100 text-gray-700"
-                                }`}
-                                title="Generate 6-month schedule with randomized order"
-                            >
-                                Random
-                            </button>
+                        <div className="flex flex-col w-full md:w-auto gap-2">
+                            <div className="flex flex-nowrap items-center">
+                                <span className="text-gray-700 text-xs mr-1">Schedule by:</span>
+                                <button
+                                    onClick={() => changeSortType(SortType.ByName)}
+                                    className={`px-1.5 py-1 md:px-2 md:py-1.5 rounded-md text-xs mr-1 ${
+                                        sortType === SortType.ByName
+                                            ? "bg-blue-100 text-blue-700"
+                                            : "bg-gray-100 text-gray-700"
+                                    }`}
+                                    title="Generate 6-month schedule ordered by name"
+                                >
+                                    Name
+                                </button>
+                                <button
+                                    onClick={() => changeSortType(SortType.Random)}
+                                    className={`px-1.5 py-1 md:px-2 md:py-1.5 rounded-md text-xs mr-1 ${
+                                        sortType === SortType.Random
+                                            ? "bg-blue-100 text-blue-700"
+                                            : "bg-gray-100 text-gray-700"
+                                    }`}
+                                    title="Generate 6-month schedule with randomized order"
+                                >
+                                    Random
+                                </button>
+                                <button
+                                    onClick={() => changeSortType(SortType.ByAddOrder)}
+                                    className={`px-1.5 py-1 md:px-2 md:py-1.5 rounded-md text-xs ${
+                                        sortType === SortType.ByAddOrder
+                                            ? "bg-blue-100 text-blue-700"
+                                            : "bg-gray-100 text-gray-700"
+                                    }`}
+                                    title="Generate 6-month schedule ordered by when members were added"
+                                >
+                                    Order
+                                </button>
+                            </div>
                             <button
                                 onClick={() => setNewPersonFormOpen(!newPersonFormOpen)}
                                 className="px-2 py-1.5 md:px-3 md:py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-xs md:text-sm"

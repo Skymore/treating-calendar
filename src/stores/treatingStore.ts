@@ -326,6 +326,22 @@ export const useTreatingStore = create<TreatingState>((set, get) => ({
                 }
                 return valueA - valueB;
             });
+        } else if (type === SortType.ByAddOrder) {
+            // Sort by creation time (if available), then by ID as fallback
+            // But still prioritize those with lower treating value
+            sortedPersons.sort((a, b) => {
+                const valueA = calculateTreatingValue(a);
+                const valueB = calculateTreatingValue(b);
+                if (valueA === valueB) {
+                    // 优先使用 createdAt 字段排序
+                    if (a.createdAt && b.createdAt) {
+                        return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+                    }
+                    // 如果没有 createdAt 字段，则使用 ID 作为备选
+                    return a.id.localeCompare(b.id);
+                }
+                return valueA - valueB;
+            });
         } else {
             // Random sort, but prioritize those with lower treating value
             sortedPersons.sort(() => Math.random() - 0.5);
@@ -669,6 +685,7 @@ export const useTreatingStore = create<TreatingState>((set, get) => ({
         const minCalculatedValue = persons.length > 0 ? Math.min(...persons.map((p) => calculateTreatingValue(p))) : 0;
 
         const id = uuidv4();
+        const createdAt = new Date().toISOString(); // 记录创建时间
         const newPerson: Personnel = {
             id,
             userId: userId,
@@ -678,6 +695,7 @@ export const useTreatingStore = create<TreatingState>((set, get) => ({
             hostingCount: 0,
             lastHosted: "",
             hostOffset: minCalculatedValue, // Set hostOffset to current minimum calculated value
+            createdAt, // 添加创建时间
         };
 
         try {
@@ -690,6 +708,7 @@ export const useTreatingStore = create<TreatingState>((set, get) => ({
                 phone: newPerson.phone,
                 hostingCount: 0,
                 hostOffset: minCalculatedValue,
+                createdAt, // 添加创建时间
             });
 
             if (error) throw error;

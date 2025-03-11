@@ -16,6 +16,7 @@ export interface Personnel {
   hostingCount: number;
   lastHosted: string;
   hostOffset: number;
+  createdAt: string; // 必须字段，不带问号
 }
 
 export interface HostSchedule {
@@ -30,5 +31,6 @@ export interface HostSchedule {
 
 export enum SortType {
   ByName = 'byName',
-  Random = 'random'
+  Random = 'random',
+  ByAddOrder = 'byAddOrder'
 }
