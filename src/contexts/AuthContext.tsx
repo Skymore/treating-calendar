@@ -9,15 +9,15 @@ type AuthContextType = {
   loading: boolean;
   signInWithGoogle: () => Promise<{
     error: Error | null;
-    data: Session | null;
+    data: { provider: string; url: string | null } | null;
   }>;
   signInWithGithub: () => Promise<{
     error: Error | null;
-    data: Session | null;
+    data: { provider: string; url: string | null } | null;
   }>;
   signInWithAzure: () => Promise<{
     error: Error | null;
-    data: Session | null;
+    data: { provider: string; url: string | null } | null;
   }>;
   signOut: () => Promise<void>;
 };
@@ -61,7 +61,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       },
     });
     
-    return { data: data.session, error };
+    return { data, error };
   };
 
   // Sign in with GitHub
@@ -73,7 +73,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       },
     });
     
-    return { data: data.session, error };
+    return { data, error };
   };
 
   // Sign in with Azure (Microsoft)
@@ -85,7 +85,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       },
     });
     
-    return { data: data.session, error };
+    return { data, error };
   };
 
   // Sign out
