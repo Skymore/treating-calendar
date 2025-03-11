@@ -31,6 +31,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // 获取重定向URL的辅助函数
+  const getRedirectUrl = () => {
+    // 在生产环境中始终使用固定的URL
+    if (import.meta.env.PROD) {
+      return 'https://treating.ruit.me';
+    }
+    // 在开发环境中使用环境变量或当前URL
+    return import.meta.env.VITE_APP_URL || window.location.origin;
+  };
+
   useEffect(() => {
     // Get the current session
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -57,7 +67,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: import.meta.env.VITE_APP_URL || window.location.origin,
+        redirectTo: getRedirectUrl(),
       },
     });
     
@@ -69,7 +79,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'github',
       options: {
-        redirectTo: import.meta.env.VITE_APP_URL || window.location.origin,
+        redirectTo: getRedirectUrl(),
       },
     });
     
@@ -81,7 +91,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'azure',
       options: {
-        redirectTo: import.meta.env.VITE_APP_URL || window.location.origin,
+        redirectTo: getRedirectUrl(),
       },
     });
     

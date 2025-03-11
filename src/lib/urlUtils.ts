@@ -4,16 +4,17 @@
  * @returns The base URL for the application
  */
 export function getAppBaseUrl(): string {
-  // First check for environment variable
-  const envUrl = import.meta.env.VITE_APP_URL;
+  // 在生产环境中始终使用固定的URL
+  if (import.meta.env.PROD) {
+    return 'https://treating.ruit.me';
+  }
   
-  // If environment variable is set, use it
+  // 在开发环境中使用环境变量或当前URL
+  const envUrl = import.meta.env.VITE_APP_URL;
   if (envUrl) {
     return envUrl;
   }
   
-  // Otherwise, use window.location as fallback
-  // This will work for development but not ideal for production
-  // Extract the origin (protocol + hostname + port)
+  // 最后才使用window.location作为后备选项
   return window.location.origin;
 } 
