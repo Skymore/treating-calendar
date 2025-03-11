@@ -57,7 +57,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${window.location.origin}`,
+        redirectTo: import.meta.env.VITE_APP_URL || window.location.origin,
       },
     });
     
@@ -69,7 +69,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'github',
       options: {
-        redirectTo: `${window.location.origin}`,
+        redirectTo: import.meta.env.VITE_APP_URL || window.location.origin,
       },
     });
     
@@ -81,7 +81,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'azure',
       options: {
-        redirectTo: `${window.location.origin}`,
+        redirectTo: import.meta.env.VITE_APP_URL || window.location.origin,
       },
     });
     

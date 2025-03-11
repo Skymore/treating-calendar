@@ -5,6 +5,7 @@ import { today, getLocalTimeZone, CalendarDate } from "@internationalized/date";
 import { useEmailTemplate } from '../hooks/useEmailTemplate';
 import { getUserId } from '../lib/userIdUtils';
 import { useTeamInfo } from '../hooks/useTeamInfo';
+import { showNotification } from '../utils/notification';
 
 interface SettingsProps {
   showSettings: boolean;
@@ -12,14 +13,15 @@ interface SettingsProps {
   personnel: Personnel[];
   schedule: HostSchedule[];
   fetchData: () => Promise<void>;
+  isCreator?: boolean;
 }
 
 export default function Settings({ 
   showSettings, 
-  // setShowSettings, 
   personnel, 
   schedule,
-  fetchData
+  fetchData,
+  isCreator = false
 }: SettingsProps) {
   const [activeTab, setActiveTab] = useState('export');
   const [emailSubject, setEmailSubject] = useState<string>('');
@@ -70,8 +72,18 @@ export default function Settings({
     return nextThursday;
   };
 
+  // Add a check for creator permissions
+  const checkPermission = () => {
+    if (!isCreator) {
+      showNotification('You need to sign in as the team creator to modify settings', 'error');
+      return false;
+    }
+    return true;
+  };
+
   // Export data functionality
   const exportData = () => {
+    // Allow export for all users
     const data = {
       personnel,
       schedule
@@ -97,6 +109,11 @@ export default function Settings({
 
   // Import data functionality
   const importData = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (!isCreator) {
+      showNotification('Only the team creator can import data', 'error');
+      return;
+    }
+    
     const file = event.target.files?.[0];
     if (!file) return;
 
@@ -133,10 +150,10 @@ export default function Settings({
       // Refresh data
       await fetchData();
       
-      alert('Data imported successfully!');
+      showNotification('Data imported successfully!', 'success');
     } catch (error) {
       console.error('Import error:', error);
-      alert('Import failed! Please ensure the JSON format is correct.');
+      showNotification('Import failed! Please ensure the JSON format is correct.', 'error');
     }
     
     // Reset file input
@@ -145,6 +162,8 @@ export default function Settings({
 
   // Save email template
   const saveEmailTemplate = async () => {
+    if (!checkPermission()) return;
+    
     try {
       // Update host template in database
       await updateHostTemplate(emailSubject, emailTemplate);
@@ -161,6 +180,8 @@ export default function Settings({
 
   // Reset email template
   const resetEmailTemplate = async () => {
+    if (!checkPermission()) return;
+    
     try {
       await resetTemplates();
       alert('Templates reset to default successfully!');
@@ -172,11 +193,15 @@ export default function Settings({
 
   // Handle team notification toggle
   const handleTeamNotificationToggle = async (enabled: boolean) => {
+    if (!checkPermission()) return;
+    
     await toggleTeamNotifications(enabled);
   };
 
   // Handle host notification toggle
   const handleHostNotificationToggle = async (enabled: boolean) => {
+    if (!checkPermission()) return;
+    
     await toggleHostNotifications(enabled);
   };
 
@@ -187,7 +212,7 @@ export default function Settings({
   const nextThursday = getNextThursday();
 
   return (
-    <div className="mt-4 bg-white rounded-lg shadow-md overflow-hidden">
+    <div className={`mt-4 ${showSettings ? 'block' : 'hidden'}`}>
       <div className="flex flex-wrap border-b">
         <button 
           className={`px-3 py-2 md:px-5 md:py-3 font-medium text-xs md:text-sm ${activeTab === 'export' ? 'bg-blue-50 text-blue-700 border-b-2 border-blue-500' : 'text-gray-600 hover:bg-gray-50'}`}

@@ -4,6 +4,7 @@ import { CalendarDate, today, getLocalTimeZone, parseDate } from "@international
 import { v4 as uuidv4 } from "uuid";
 import { supabase } from "../lib/supabase";
 import { getUserId } from "../lib/userIdUtils";
+import { showNotification } from "../utils/notification";
 
 // 定义store的状态类型
 interface TreatingState {
@@ -66,6 +67,9 @@ interface TreatingState {
     // 内部方法
     fetchAndMarkCompleted: () => Promise<[HostSchedule[], HostSchedule[]]>;
     calculateActualhostingCounts: (peopleList: Personnel[], date: CalendarDate) => Promise<void>;
+
+    // 检查用户是否是团队创建者
+    checkTeamCreator: () => Promise<boolean>;
 }
 
 // 创建store
@@ -304,8 +308,40 @@ export const useTreatingStore = create<TreatingState>((set, get) => ({
         }
     },
 
+    // 检查用户是否是团队创建者
+    checkTeamCreator: async () => {
+        try {
+            // 获取当前用户
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) return false;
+            
+            const userId = getUserId();
+            
+            // 检查用户是否是团队创建者
+            const { data, error } = await supabase
+                .from('team_creators')
+                .select('*')
+                .eq('team_id', userId)
+                .eq('auth_user_id', user.id)
+                .single();
+            
+            if (error || !data) return false;
+            return true;
+        } catch (err) {
+            console.error('Error checking team creator status:', err);
+            return false;
+        }
+    },
+
     generateSchedule: async (peopleList: Personnel[], type: SortType, date: CalendarDate) => {
-        const { setSchedule, isThursday, calculateTreatingValue, userId } = get();
+        const { setSchedule, isThursday, calculateTreatingValue, userId, checkTeamCreator } = get();
+
+        // 检查权限
+        const isCreator = await checkTeamCreator();
+        if (!isCreator) {
+            showNotification('Only the team creator can generate schedules', 'error');
+            return;
+        }
 
         if (peopleList.length === 0) {
             setSchedule([]);
@@ -516,12 +552,19 @@ export const useTreatingStore = create<TreatingState>((set, get) => ({
     },
 
     swapPersons: async (date1: string, date2: string) => {
-        const { schedule, setSchedule, isDateInPast, persons, debugDate, calculateActualhostingCounts, userId } = get();
+        const { schedule, setSchedule, isDateInPast, persons, debugDate, calculateActualhostingCounts, userId, checkTeamCreator } = get();
 
         try {
+            // 检查权限
+            const isCreator = await checkTeamCreator();
+            if (!isCreator) {
+                showNotification('Only the team creator can swap personnel', 'error');
+                return;
+            }
+
             // Check if either date is in the past
             if (isDateInPast(date1) || isDateInPast(date2)) {
-                alert("Cannot swap past dates. Only future dates can be swapped.");
+                showNotification('Cannot swap past dates. Only future dates can be swapped.', 'error');
                 return;
             }
 
@@ -568,10 +611,10 @@ export const useTreatingStore = create<TreatingState>((set, get) => ({
             // Recalculate treating counts
             await calculateActualhostingCounts(persons, debugDate);
 
-            alert("Successfully swapped treating order between two people!");
+            showNotification('Successfully swapped treating order between two people!', 'success');
         } catch (error) {
             console.error("Failed to swap treating order:", error);
-            alert("Failed to swap treating order. Please try again.");
+            showNotification('Failed to swap treating order. Please try again.', 'error');
         }
     },
 
@@ -641,9 +684,16 @@ export const useTreatingStore = create<TreatingState>((set, get) => ({
     },
 
     removePerson: async (id: string) => {
-        const { persons, setPersons, debugDate, generateSchedule, sortType, userId } = get();
+        const { persons, setPersons, debugDate, generateSchedule, sortType, userId, checkTeamCreator } = get();
 
         try {
+            // 检查权限
+            const isCreator = await checkTeamCreator();
+            if (!isCreator) {
+                showNotification('Only the team creator can remove team members', 'error');
+                return;
+            }
+
             // Delete from database
             const { error } = await supabase.from("personnel").delete().eq("userId", userId).eq("id", id);
 
@@ -655,9 +705,11 @@ export const useTreatingStore = create<TreatingState>((set, get) => ({
 
             // Directly use updated person list to generate schedule
             await generateSchedule(updatedPersons, sortType, debugDate);
+            
+            showNotification('Team member removed successfully', 'success');
         } catch (error) {
             console.error("Failed to delete person:", error);
-            alert("Failed to delete person. Please try again.");
+            showNotification('Failed to delete person. Please try again.', 'error');
         }
     },
 
@@ -677,28 +729,36 @@ export const useTreatingStore = create<TreatingState>((set, get) => ({
             setNewPhone,
             setNewPersonFormOpen,
             userId,
+            checkTeamCreator
         } = get();
 
         if (!newName.trim() || !newEmail.trim()) return;
 
-        // Calculate current minimum 'calculated value'
-        const minCalculatedValue = persons.length > 0 ? Math.min(...persons.map((p) => calculateTreatingValue(p))) : 0;
-
-        const id = uuidv4();
-        const createdAt = new Date().toISOString(); // 记录创建时间
-        const newPerson: Personnel = {
-            id,
-            userId: userId,
-            name: newName.trim(),
-            email: newEmail.trim(),
-            phone: newPhone.trim() || undefined,
-            hostingCount: 0,
-            lastHosted: "",
-            hostOffset: minCalculatedValue, // Set hostOffset to current minimum calculated value
-            createdAt, // 添加创建时间
-        };
-
         try {
+            // 检查权限
+            const isCreator = await checkTeamCreator();
+            if (!isCreator) {
+                showNotification('Only the team creator can add team members', 'error');
+                return;
+            }
+
+            // Calculate current minimum 'calculated value'
+            const minCalculatedValue = persons.length > 0 ? Math.min(...persons.map((p) => calculateTreatingValue(p))) : 0;
+
+            const id = uuidv4();
+            const createdAt = new Date().toISOString(); // 记录创建时间
+            const newPerson: Personnel = {
+                id,
+                userId: userId,
+                name: newName.trim(),
+                email: newEmail.trim(),
+                phone: newPhone.trim() || undefined,
+                hostingCount: 0,
+                lastHosted: "",
+                hostOffset: minCalculatedValue, // Set hostOffset to current minimum calculated value
+                createdAt, // 添加创建时间
+            };
+
             // Add to database
             const { error } = await supabase.from("personnel").insert({
                 id,
@@ -725,9 +785,11 @@ export const useTreatingStore = create<TreatingState>((set, get) => ({
 
             // Generate new schedule
             await generateSchedule(updatedPersons, sortType, debugDate);
+            
+            showNotification('Team member added successfully', 'success');
         } catch (error) {
             console.error("Failed to add person:", error);
-            alert("Failed to add person. Please try again.");
+            showNotification('Failed to add person. Please try again.', 'error');
         }
     },
 }));

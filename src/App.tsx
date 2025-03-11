@@ -12,13 +12,14 @@ import { NotificationProvider } from './contexts/NotificationContext';
 import { useAuth } from './contexts/AuthContext';
 import Auth from './components/Auth';
 import UserProfile from './components/UserProfile';
+import LoginButton from './components/LoginButton';
 
 export default function App() {
   // 使用单一状态来控制当前打开的tab
-  const [activeTab, setActiveTab] = useState<'none' | 'settings' | 'emailTest' | 'teamInfo' | 'zustandTest'>('none');
+  const [activeTab, setActiveTab] = useState<'none' | 'settings' | 'emailTest' | 'teamInfo' | 'zustandTest' | 'login'>('none');
   
   // Use the team info hook
-  const { teamInfo, loading: teamLoading } = useTeamInfo();
+  const { teamInfo, loading: teamLoading, isTeamCreator } = useTeamInfo();
   
   // 直接从store获取数据和方法
   const {
@@ -30,8 +31,26 @@ export default function App() {
   // 获取认证状态
   const { user, loading: authLoading } = useAuth();
 
+  const [isCreator, setIsCreator] = useState(false);
+  
+  // Check if the current user is the team creator
+  useEffect(() => {
+    const checkCreatorStatus = async () => {
+      if (!user || !teamInfo?.userId) return;
+      
+      try {
+        const creatorStatus = await isTeamCreator(teamInfo.userId);
+        setIsCreator(creatorStatus);
+      } catch (error) {
+        console.error('Error checking creator status:', error);
+      }
+    };
+    
+    checkCreatorStatus();
+  }, [user, teamInfo?.userId, isTeamCreator]);
+
   // 切换tab的函数
-  const toggleTab = (tab: 'settings' | 'emailTest' | 'teamInfo' | 'zustandTest') => {
+  const toggleTab = (tab: 'settings' | 'emailTest' | 'teamInfo' | 'zustandTest' | 'login') => {
     if (activeTab === tab) {
       setActiveTab('none');
     } else {
@@ -64,19 +83,10 @@ export default function App() {
     );
   }
 
-  // If user is not logged in, show login interface
-  if (!user) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-        <Auth />
-      </div>
-    );
-  }
-
   return (
     <NotificationProvider>
       <div className="container mx-auto p-4 max-w-6xl">
-        <UserProfile />
+        {user ? <UserProfile /> : <LoginButton onClick={() => toggleTab('login')} />}
         
         <header className="mb-6 bg-white shadow-sm rounded-lg p-4">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
@@ -157,9 +167,16 @@ export default function App() {
             personnel={persons}
             schedule={schedule}
             fetchData={fetchData}
+            isCreator={isCreator}
           />
           
           {activeTab === 'emailTest' && <div><EmailTest /></div>}
+          
+          {activeTab === 'login' && (
+            <div className="mt-4">
+              <Auth onClose={() => setActiveTab('none')} />
+            </div>
+          )}
         </header>
         
         <main>

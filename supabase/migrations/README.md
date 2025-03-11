@@ -41,4 +41,8 @@ npx supabase db push
 
 ## 迁移文件说明
 
-- `20240311_auth_setup.sql`: 设置用户认证相关的表和权限 
+- `20240311_auth_setup.sql`: 设置用户认证相关的表和权限
+- `20240312_team_creators.sql`: 创建team_creators表，用于将Supabase用户ID与团队ID绑定
+- `20240313_teams_rls.sql`: 为teams表添加行级安全策略，确保只有团队创建者才能修改团队设置
+- `20240314_personnel_rls.sql`: 为personnel表添加行级安全策略，确保只有团队创建者才能修改人员数据
+- `20240315_host_schedule_rls.sql`: 为host_schedule表添加行级安全策略，确保只有团队创建者才能修改日程安排 

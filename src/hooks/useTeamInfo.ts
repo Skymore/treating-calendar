@@ -2,11 +2,14 @@ import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { TeamInfo } from '../types/types';
 import { getUserId, setUserIdToUrl } from '../lib/userIdUtils';
+import { useAuth } from '../contexts/AuthContext';
+import { showNotification } from '../utils/notification';
 
 export function useTeamInfo() {
   const [teamInfo, setTeamInfo] = useState<TeamInfo | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { user } = useAuth();
 
   // Fetch team information from database
   const fetchTeamInfo = async (userId: string) => {
@@ -40,11 +43,81 @@ export function useTeamInfo() {
     }
   };
 
+  // Check if the current user is the creator of the team
+  const isTeamCreator = async (teamId: string): Promise<boolean> => {
+    if (!user) return false;
+    
+    try {
+      const { data, error } = await supabase
+        .from('team_creators')
+        .select('*')
+        .eq('team_id', teamId)
+        .eq('auth_user_id', user.id)
+        .single();
+      
+      if (error || !data) return false;
+      return true;
+    } catch (err) {
+      console.error('Error checking team creator status:', err);
+      return false;
+    }
+  };
+
+  // Link the current authenticated user with a team
+  const linkUserToTeam = async (teamId: string): Promise<boolean> => {
+    if (!user) return false;
+    
+    try {
+      // Check if link already exists
+      const { data: existingLink } = await supabase
+        .from('team_creators')
+        .select('*')
+        .eq('team_id', teamId)
+        .single();
+      
+      // If no creator is linked yet, link the current user
+      if (!existingLink) {
+        const { error } = await supabase
+          .from('team_creators')
+          .insert([{
+            team_id: teamId,
+            auth_user_id: user.id,
+            created_at: new Date().toISOString()
+          }]);
+        
+        if (error) {
+          console.error('Failed to link user to team:', error);
+          return false;
+        }
+        
+        return true;
+      } else {
+        // Team already has a creator
+        return existingLink.auth_user_id === user.id;
+      }
+    } catch (err) {
+      console.error('Error linking user to team:', err);
+      return false;
+    }
+  };
+
   // Toggle team notifications setting
   const toggleTeamNotifications = async (enabled: boolean) => {
     const userId = getUserId();
     setLoading(true);
     try {
+      // Check if user is the team creator
+      if (user) {
+        const isCreator = await isTeamCreator(userId);
+        if (!isCreator) {
+          showNotification('Only the team creator can modify notification settings', 'error');
+          return;
+        }
+      } else {
+        showNotification('You need to sign in to modify settings', 'error');
+        return;
+      }
+
       const { error } = await supabase
         .from('teams')
         .update({ teamNotificationsEnabled: enabled })
@@ -54,7 +127,7 @@ export function useTeamInfo() {
 
       // Update local state
       setTeamInfo(prev => prev ? { ...prev, teamNotificationsEnabled: enabled } : null);
-      alert(`Automatic team notifications ${enabled ? 'enabled' : 'disabled'} for team: ${userId}`);
+      showNotification(`Automatic team notifications ${enabled ? 'enabled' : 'disabled'}`, 'success');
       console.log(`Automatic team notifications ${enabled ? 'enabled' : 'disabled'} for team: ${userId}`);
     } catch (err) {
       console.error('Failed to update team notification settings:', err);
@@ -69,6 +142,18 @@ export function useTeamInfo() {
     const userId = getUserId();
     setLoading(true);
     try {
+      // Check if user is the team creator
+      if (user) {
+        const isCreator = await isTeamCreator(userId);
+        if (!isCreator) {
+          showNotification('Only the team creator can modify notification settings', 'error');
+          return;
+        }
+      } else {
+        showNotification('You need to sign in to modify settings', 'error');
+        return;
+      }
+
       const { error } = await supabase
         .from('teams')
         .update({ hostNotificationsEnabled: enabled })
@@ -78,7 +163,7 @@ export function useTeamInfo() {
 
       // Update local state
       setTeamInfo(prev => prev ? { ...prev, hostNotificationsEnabled: enabled } : null);
-      alert(`Automatic host notifications ${enabled ? 'enabled' : 'disabled'} for team: ${userId}`);
+      showNotification(`Automatic host notifications ${enabled ? 'enabled' : 'disabled'}`, 'success');
       console.log(`Automatic host notifications ${enabled ? 'enabled' : 'disabled'} for team: ${userId}`);
     } catch (err) {
       console.error('Failed to update host notification settings:', err);
@@ -101,6 +186,20 @@ export function useTeamInfo() {
         .single();
 
       if (existingTeam) {
+        // Check if user is the team creator before updating
+        if (user) {
+          const isCreator = await isTeamCreator(userId);
+          if (!isCreator) {
+            showNotification('Only the team creator can modify team information', 'error');
+            setLoading(false);
+            return;
+          }
+        } else {
+          showNotification('You need to sign in to modify team information', 'error');
+          setLoading(false);
+          return;
+        }
+
         // Update existing team info
         console.log('Updating existing team:', userId, teamName);
         const { error } = await supabase
@@ -127,6 +226,11 @@ export function useTeamInfo() {
         if (error) throw error;
       }
 
+      // If user is authenticated, link them as the team creator
+      if (user) {
+        await linkUserToTeam(userId);
+      }
+
       // Update local state
       localStorage.setItem('treating_calendar_team_name', teamName);
       setTeamInfo(prev => {
@@ -138,6 +242,8 @@ export function useTeamInfo() {
           hostNotificationsEnabled: prev?.hostNotificationsEnabled !== undefined ? prev.hostNotificationsEnabled : false
         };
       });
+      
+      showNotification('Team information saved successfully', 'success');
     } catch (err) {
       console.error('Failed to save team information:', err);
       setError('Failed to save team information, please try again later');
@@ -165,6 +271,8 @@ export function useTeamInfo() {
     saveTeamInfo,
     fetchTeamInfo,
     toggleTeamNotifications,
-    toggleHostNotifications
+    toggleHostNotifications,
+    isTeamCreator,
+    linkUserToTeam
   };
 } 
