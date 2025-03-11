@@ -40,9 +40,6 @@ export const createInitialTeamEntry = async (userId: string, teamName: string = 
       .eq('userId', userId)
       .maybeSingle();
     
-    console.log('Create initial team entry:', existingTeam);
-
-    
     // Only create new entry if it doesn't exist
     if (!existingTeam) {
       const newTeam: TeamInfo = {
@@ -55,6 +52,7 @@ export const createInitialTeamEntry = async (userId: string, teamName: string = 
         .from('teams')
         .insert([newTeam]);
       
+      console.log('Create initial team entry:', newTeam);
       if (error) {
         console.error('Failed to create initial team entry:', error);
       } else {

@@ -54,6 +54,7 @@ export function useTeamInfo() {
 
       // Update local state
       setTeamInfo(prev => prev ? { ...prev, teamNotificationsEnabled: enabled } : null);
+      alert(`Automatic team notifications ${enabled ? 'enabled' : 'disabled'} for team: ${userId}`);
       console.log(`Automatic team notifications ${enabled ? 'enabled' : 'disabled'} for team: ${userId}`);
     } catch (err) {
       console.error('Failed to update team notification settings:', err);
@@ -77,6 +78,7 @@ export function useTeamInfo() {
 
       // Update local state
       setTeamInfo(prev => prev ? { ...prev, hostNotificationsEnabled: enabled } : null);
+      alert(`Automatic host notifications ${enabled ? 'enabled' : 'disabled'} for team: ${userId}`);
       console.log(`Automatic host notifications ${enabled ? 'enabled' : 'disabled'} for team: ${userId}`);
     } catch (err) {
       console.error('Failed to update host notification settings:', err);

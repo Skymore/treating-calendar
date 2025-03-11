@@ -88,6 +88,8 @@ export default function Settings({
     a.download = `treating-calendar-export-${new Date().toISOString().split('T')[0]}.json`;
     document.body.appendChild(a);
     a.click();
+
+    alert('Data exported successfully!');
     
     // Cleanup
     document.body.removeChild(a);
@@ -382,11 +384,12 @@ export default function Settings({
           <div>
             <h3 className="font-medium text-base md:text-lg mb-3">Notification Settings</h3>
             
-            {teamLoading ? (
+            {/* {teamLoading ? (
               <div className="flex justify-center p-4">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
               </div>
-            ) : teamError ? (
+            ) :  */}
+            {teamError ? (
               <div className="bg-red-50 text-red-700 p-3 rounded-md mb-4">
                 Error loading team information: {teamError}
               </div>
