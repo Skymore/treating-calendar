@@ -41,7 +41,6 @@ export default function Settings({
   // Use the team info hook for notification settings
   const {
     teamInfo,
-    loading: teamLoading,
     error: teamError,
     toggleTeamNotifications,
     toggleHostNotifications
