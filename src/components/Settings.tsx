@@ -107,15 +107,17 @@ export default function Settings({
         throw new Error('Invalid data format');
       }
 
-      // Clear existing data
-      await supabase.from('personnel').delete().neq('id', '0');
-      await supabase.from('host_schedule').delete().neq('id', '0');
+      const currentUserId = getUserId();
+
+      // Clear existing data - ONLY for the current user
+      await supabase.from('personnel').delete().eq('userId', currentUserId).neq('id', '0');
+      await supabase.from('host_schedule').delete().eq('userId', currentUserId).neq('id', '0');
       
       // Import personnel data
       for (const person of data.personnel) {
         await supabase.from('personnel').insert({
           ...person,
-          userId: getUserId()
+          userId: currentUserId
         });
       }
       
@@ -123,7 +125,7 @@ export default function Settings({
       for (const item of data.schedule) {
         await supabase.from('host_schedule').insert({
           ...item,
-          userId: getUserId()
+          userId: currentUserId
         });
       }
       
