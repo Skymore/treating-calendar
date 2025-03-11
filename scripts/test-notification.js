@@ -48,7 +48,9 @@ async function triggerNotification() {
   console.log('Testing Wednesday automatic notification...');
   console.log(`Using Supabase project: ${SUPABASE_URL}`);
   if (forceResend) {
-    console.log('Force resend mode enabled');
+    console.log('Force resend mode enabled - will ignore notification settings and previous notification status');
+  } else {
+    console.log('Normal test mode - will respect notification settings but not update notification status');
   }
   
   try {

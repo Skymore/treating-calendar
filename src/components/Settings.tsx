@@ -109,7 +109,7 @@ export default function Settings({
 
       // Clear existing data
       await supabase.from('personnel').delete().neq('id', '0');
-      await supabase.from('schedule').delete().neq('id', '0');
+      await supabase.from('host_schedule').delete().neq('id', '0');
       
       // Import personnel data
       for (const person of data.personnel) {
@@ -121,7 +121,7 @@ export default function Settings({
       
       // Import schedule data
       for (const item of data.schedule) {
-        await supabase.from('schedule').insert({
+        await supabase.from('host_schedule').insert({
           ...item,
           userId: getUserId()
         });

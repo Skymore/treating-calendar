@@ -69,10 +69,11 @@ serve(async (req) => {
     // Process each team
     for (const team of teams) {
       try {
-        console.log(`Processing team: ${team.userId} (${team.teamName || 'Unknown'})`);
+        console.log(`Processing team: ${team.userId} (${team.teamName || 'Unknown'}) ${isTest ? '(Test)' : ''} ${forceResend ? '(Force Resend)' : ''}`);
+        console.log(`Team notifications enabled: ${team.teamNotificationsEnabled}, Host notifications enabled: ${team.hostNotificationsEnabled}`);
         
-        // Check if both notifications are disabled (unless in test mode or force resend)
-        if (team.teamNotificationsEnabled === false && team.hostNotificationsEnabled === false && !isTest && !forceResend) {
+        // Check if both notifications are disabled (unless force resend)
+        if (team.teamNotificationsEnabled === false && team.hostNotificationsEnabled === false && !forceResend) {
           console.log(`Team ${team.userId} has disabled all notifications, skipping`);
           continue;
         }
@@ -102,6 +103,9 @@ serve(async (req) => {
         }
 
         console.log(`Treating person: ${treatingPerson.name} (${treatingPerson.email})`);
+        console.log(`Team Notified: ${scheduleData.teamNotified}, Host Notified: ${scheduleData.hostNotified}`);
+        console.log(`--------------------------------------------------------------------------------------------------------------------------`)
+
         
         // Format date for display
         const formattedDate = new Date(dateStr).toLocaleDateString('en-US', {
@@ -116,7 +120,7 @@ serve(async (req) => {
         // ------------------------------------------------------------------
         
         // Check if host notification needs to be sent and is enabled
-        if ((team.hostNotificationsEnabled !== false || forceResend) && 
+        if ((team.hostNotificationsEnabled || forceResend) && 
             (!scheduleData.hostNotified || forceResend)) {
           console.log(`Sending host notification to ${treatingPerson.name}`);
           
@@ -268,7 +272,7 @@ serve(async (req) => {
             });
           }
         } else {
-          if (team.hostNotificationsEnabled === false && !isTest && !forceResend) {
+          if (team.hostNotificationsEnabled === false && !forceResend) {
             console.log(`Host notifications disabled for team ${team.userId}, skipping`);
           } else {
             console.log(`Host ${treatingPerson.name} already notified`);
@@ -280,7 +284,7 @@ serve(async (req) => {
         // ------------------------------------------------------------------
         
         // Check if team notification needs to be sent and is enabled
-        if ((team.teamNotificationsEnabled !== false || forceResend) && 
+        if ((team.teamNotificationsEnabled || forceResend) && 
             (!scheduleData.teamNotified || forceResend)) {
           console.log(`Preparing to send team notification`);
           
@@ -456,7 +460,7 @@ serve(async (req) => {
             });
           }
         } else {
-          if (team.teamNotificationsEnabled === false && !isTest && !forceResend) {
+          if (team.teamNotificationsEnabled === false && !forceResend) {
             console.log(`Team notifications disabled for team ${team.userId}, skipping`);
           } else {
             console.log(`Team already notified`);
