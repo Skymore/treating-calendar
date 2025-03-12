@@ -196,14 +196,34 @@ export function useTeamInfo() {
 
   // Initialize - get team info when component mounts
   useEffect(() => {
-    const userId = getUserId();
-    console.log('useTeamInfo userId:', userId);
+    let isMounted = true;
     
-    // Ensure URL contains correct team ID
-    setUserIdToUrl(userId);
+    const initTeamInfo = async () => {
+      try {
+        const userId = getUserId();
+        console.log('useTeamInfo userId:', userId);
+        
+        // Ensure URL contains correct team ID
+        setUserIdToUrl(userId);
+        
+        // 给createInitialTeamEntry一点时间完成
+        await new Promise(resolve => setTimeout(resolve, 200));
+        
+        // Fetch team info from database
+        if (isMounted) {
+          await fetchTeamInfo(userId);
+        }
+      } catch (err) {
+        console.error('Error initializing team info:', err);
+      }
+    };
     
-    // Fetch team info from database
-    fetchTeamInfo(userId);
+    initTeamInfo();
+    
+    // 清理函数
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   return {

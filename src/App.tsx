@@ -42,16 +42,23 @@ export default function App() {
 
   // Handle URL parameters and get team info when component mounts
   useEffect(() => {
-    // Read URL parameters and initialize userId
-    const id = getUserId();
-    console.log('Current userId:', id);
+    try {
+      // Read URL parameters and initialize userId
+      const id = getUserId();
+      console.log('Current userId:', id);
     
-    // If URL has teamId parameter, automatically refresh data
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.has('teamId')) {
-      fetchData();
+      // If URL has teamId parameter, automatically refresh data
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.has('teamId')) {
+        // 给数据库操作一点时间，避免立即刷新导致缺少数据
+        setTimeout(() => {
+          fetchData();
+        }, 300);
+      }
+    } catch (err) {
+      console.error('Error initializing application:', err);
     }
-  }, []);
+  }, [fetchData]);
 
   // If authentication is loading, show loading state
   if (authLoading) {
