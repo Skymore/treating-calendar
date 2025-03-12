@@ -3,20 +3,22 @@ import { getUserId } from '../lib/userIdUtils';
 import { useTeamInfo } from '../hooks/useTeamInfo';
 import { useAuth } from '../contexts/AuthContext';
 import { showNotification } from '../utils/notification';
+import { useTreatingStore } from '../stores/treatingStore';
 
 interface TeamInfoProps {
   onClose: () => void;
 }
 
 const TeamInfo: React.FC<TeamInfoProps> = ({ onClose }) => {
-  const { teamInfo, loading, error, saveTeamInfo, isTeamCreator, linkUserToTeam } = useTeamInfo();
+  const { teamInfo, loading, error, saveTeamInfo, linkUserToTeam } = useTeamInfo();
   const [editingName, setEditingName] = useState(false);
   const [newTeamName, setNewTeamName] = useState('');
   const [shareUrl, setShareUrl] = useState('');
-  const [isCreator, setIsCreator] = useState(false);
-  const [checkingCreator, setCheckingCreator] = useState(true);
   const userId = getUserId();
   const { user } = useAuth();
+  
+  // 使用treatingStore中的isCreator状态
+  const { isCreator } = useTreatingStore();
 
   useEffect(() => {
     // Set initial team name
@@ -31,20 +33,7 @@ const TeamInfo: React.FC<TeamInfoProps> = ({ onClose }) => {
     const url = new URL(window.location.href);
     url.searchParams.set('teamId', userId);
     setShareUrl(url.toString());
-
-    // Check if current user is the creator
-    const checkCreatorStatus = async () => {
-      if (user) {
-        const creator = await isTeamCreator(userId);
-        setIsCreator(creator);
-      } else {
-        setIsCreator(false);
-      }
-      setCheckingCreator(false);
-    };
-    
-    checkCreatorStatus();
-  }, [teamInfo, userId, user, isTeamCreator]);
+  }, [teamInfo, userId]);
 
   const handleSaveTeamName = async () => {
     if (newTeamName.trim()) {
@@ -62,7 +51,6 @@ const TeamInfo: React.FC<TeamInfoProps> = ({ onClose }) => {
     
     const success = await linkUserToTeam(userId);
     if (success) {
-      setIsCreator(true);
       showNotification('You are now the creator of this team', 'success');
     } else {
       showNotification('This team already has a creator', 'error');
@@ -88,7 +76,7 @@ const TeamInfo: React.FC<TeamInfoProps> = ({ onClose }) => {
         </button>
       </div>
       
-      {loading || checkingCreator ? (
+      {loading ? (
         <div className="py-3 text-center text-gray-600 text-sm">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-2"></div>
           Loading team information...
@@ -156,7 +144,7 @@ const TeamInfo: React.FC<TeamInfoProps> = ({ onClose }) => {
                   className={`ml-2 bg-blue-50 hover:bg-blue-100 text-blue-600 p-1.5 rounded ${!isCreator ? 'opacity-50 cursor-not-allowed' : ''}`}
                   onClick={() => isCreator && setEditingName(true)}
                   disabled={!isCreator}
-                  title={!isCreator ? "Only team creator can edit team name" : "Edit team name"}
+                  title={!user ? "Please login first" : !isCreator ? "Only team creator can edit team name" : "Edit team name"}
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />

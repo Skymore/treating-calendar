@@ -15,51 +15,31 @@ export function useTeamInfo() {
   const fetchTeamInfo = async (userId: string) => {
     setLoading(true);
     try {
+      console.log('Fetching team info for userId:', userId);
+      
       // Query teams table
       const { data, error } = await supabase
         .from('teams')
         .select('*')
         .eq('userId', userId)
-        .single();
+        .maybeSingle();
 
       if (error) {
-        // If error is due to no record found, don't treat as error
-        if (error.code === 'PGRST116') {
-          setTeamInfo(null);
-        } else {
-          console.error('Failed to get team information:', error);
-          setError(error.message);
-        }
-      } else {
+        console.error('Failed to get team information:', error);
+        setError(error.message);
+      } else if (data) {
         setTeamInfo(data);
         // Save team name to localStorage for display
         localStorage.setItem('treating_calendar_team_name', data.teamName);
+      } else {
+        // 没有找到记录
+        setTeamInfo(null);
       }
     } catch (err) {
       console.error('Error while fetching team information:', err);
       setError('Failed to get team information, please try again later');
     } finally {
       setLoading(false);
-    }
-  };
-
-  // Check if the current user is the creator of the team
-  const isTeamCreator = async (teamId: string): Promise<boolean> => {
-    if (!user) return false;
-    
-    try {
-      const { data, error } = await supabase
-        .from('team_creators')
-        .select('*')
-        .eq('team_id', teamId)
-        .eq('auth_user_id', user.id)
-        .single();
-      
-      if (error || !data) return false;
-      return true;
-    } catch (err) {
-      console.error('Error checking team creator status:', err);
-      return false;
     }
   };
 
@@ -73,7 +53,7 @@ export function useTeamInfo() {
         .from('team_creators')
         .select('*')
         .eq('team_id', teamId)
-        .single();
+        .maybeSingle();
       
       // If no creator is linked yet, link the current user
       if (!existingLink) {
@@ -106,18 +86,6 @@ export function useTeamInfo() {
     const userId = getUserId();
     setLoading(true);
     try {
-      // Check if user is the team creator
-      if (user) {
-        const isCreator = await isTeamCreator(userId);
-        if (!isCreator) {
-          showNotification('Only the team creator can modify notification settings', 'error');
-          return;
-        }
-      } else {
-        showNotification('You need to sign in to modify settings', 'error');
-        return;
-      }
-
       const { error } = await supabase
         .from('teams')
         .update({ teamNotificationsEnabled: enabled })
@@ -142,18 +110,6 @@ export function useTeamInfo() {
     const userId = getUserId();
     setLoading(true);
     try {
-      // Check if user is the team creator
-      if (user) {
-        const isCreator = await isTeamCreator(userId);
-        if (!isCreator) {
-          showNotification('Only the team creator can modify notification settings', 'error');
-          return;
-        }
-      } else {
-        showNotification('You need to sign in to modify settings', 'error');
-        return;
-      }
-
       const { error } = await supabase
         .from('teams')
         .update({ hostNotificationsEnabled: enabled })
@@ -183,23 +139,9 @@ export function useTeamInfo() {
         .from('teams')
         .select('*')
         .eq('userId', userId)
-        .single();
+        .maybeSingle();
 
       if (existingTeam) {
-        // Check if user is the team creator before updating
-        if (user) {
-          const isCreator = await isTeamCreator(userId);
-          if (!isCreator) {
-            showNotification('Only the team creator can modify team information', 'error');
-            setLoading(false);
-            return;
-          }
-        } else {
-          showNotification('You need to sign in to modify team information', 'error');
-          setLoading(false);
-          return;
-        }
-
         // Update existing team info
         console.log('Updating existing team:', userId, teamName);
         const { error } = await supabase
@@ -272,7 +214,6 @@ export function useTeamInfo() {
     fetchTeamInfo,
     toggleTeamNotifications,
     toggleHostNotifications,
-    isTeamCreator,
     linkUserToTeam
   };
 } 

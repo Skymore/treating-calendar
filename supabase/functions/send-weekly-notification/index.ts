@@ -84,7 +84,7 @@ serve(async (req) => {
           .select('*, personnel(name, email)')
           .eq('userId', team.userId)
           .eq('date', dateStr)
-          .single();
+          .maybeSingle();
         
         if (scheduleError && scheduleError.code !== 'PGRST116') {
           throw new Error(`Error fetching schedule for team ${team.userId}: ${scheduleError.message}`);
@@ -130,7 +130,7 @@ serve(async (req) => {
             .select('*')
             .eq('userId', team.userId)
             .eq('template_type', 'host_notification')
-            .single();
+            .maybeSingle();
             
           // If no template found, use generic content
           let hostSubject = 'Your Thursday Treating Reminder';
@@ -294,7 +294,7 @@ serve(async (req) => {
             .select('*')
             .eq('userId', team.userId)
             .eq('template_type', 'team_notification')
-            .single();
+            .maybeSingle();
             
           // If no template found, use generic content
           let teamSubject = 'Thursday Treating Reminder';

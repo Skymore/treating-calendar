@@ -69,10 +69,11 @@ export function useEmailTemplate(): UseEmailTemplateReturn {
       const { data: hostData, error: hostError } = await supabase
         .from('email_templates')
         .select('*')
+        .eq('userId', getUserId())
         .eq('template_type', 'host_notification')
-        .single();
+        .maybeSingle();
       
-      if (hostError && hostError.code !== 'PGRST116') { // PGRST116 is "no rows returned" error
+      if (hostError) {
         throw hostError;
       }
       
@@ -80,10 +81,11 @@ export function useEmailTemplate(): UseEmailTemplateReturn {
       const { data: teamData, error: teamError } = await supabase
         .from('email_templates')
         .select('*')
+        .eq('userId', getUserId())
         .eq('template_type', 'team_notification')
-        .single();
+        .maybeSingle();
       
-      if (teamError && teamError.code !== 'PGRST116') {
+      if (teamError) {
         throw teamError;
       }
       
@@ -133,7 +135,7 @@ Thank you for your cooperation!`,
             userId: getUserId(),
           })
           .select()
-          .single();
+          .maybeSingle();
         
         if (hostError) throw hostError;
         if (hostData) setHostTemplate(hostData as EmailTemplate);
@@ -161,7 +163,7 @@ Have a great day!`,
             userId: getUserId(),
           })
           .select()
-          .single();
+          .maybeSingle();
         
         if (teamError) throw teamError;
         if (teamData) setTeamTemplate(teamData as EmailTemplate);
@@ -191,7 +193,7 @@ Have a great day!`,
             userId: getUserId(),
           })
           .select()
-          .single();
+          .maybeSingle();
         
         if (error) throw error;
         if (data) setHostTemplate(data as EmailTemplate);
@@ -209,7 +211,7 @@ Have a great day!`,
           })
           .eq('id', hostTemplate.id)
           .select()
-          .single();
+          .maybeSingle();
         
         if (error) throw error;
         if (data) setHostTemplate(data as EmailTemplate);
@@ -243,7 +245,7 @@ Have a great day!`,
             userId: getUserId(),
           })
           .select()
-          .single();
+          .maybeSingle();
         
         if (error) throw error;
         if (data) setTeamTemplate(data as EmailTemplate);
@@ -261,7 +263,7 @@ Have a great day!`,
           })
           .eq('id', teamTemplate.id)
           .select()
-          .single();
+          .maybeSingle();
         
         if (error) throw error;
         if (data) setTeamTemplate(data as EmailTemplate);

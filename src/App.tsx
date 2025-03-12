@@ -19,7 +19,7 @@ export default function App() {
   const [activeTab, setActiveTab] = useState<'none' | 'settings' | 'emailTest' | 'teamInfo' | 'zustandTest' | 'login'>('none');
   
   // Use the team info hook
-  const { teamInfo, loading: teamLoading, isTeamCreator } = useTeamInfo();
+  const { teamInfo, loading: teamLoading } = useTeamInfo();
   
   // 直接从store获取数据和方法
   const {
@@ -30,25 +30,7 @@ export default function App() {
 
   // 获取认证状态
   const { user, loading: authLoading } = useAuth();
-
-  const [isCreator, setIsCreator] = useState(false);
   
-  // Check if the current user is the team creator
-  useEffect(() => {
-    const checkCreatorStatus = async () => {
-      if (!user || !teamInfo?.userId) return;
-      
-      try {
-        const creatorStatus = await isTeamCreator(teamInfo.userId);
-        setIsCreator(creatorStatus);
-      } catch (error) {
-        console.error('Error checking creator status:', error);
-      }
-    };
-    
-    checkCreatorStatus();
-  }, [user, teamInfo?.userId, isTeamCreator]);
-
   // 切换tab的函数
   const toggleTab = (tab: 'settings' | 'emailTest' | 'teamInfo' | 'zustandTest' | 'login') => {
     if (activeTab === tab) {
@@ -167,7 +149,6 @@ export default function App() {
             personnel={persons}
             schedule={schedule}
             fetchData={fetchData}
-            isCreator={isCreator}
           />
           
           {activeTab === 'emailTest' && <div><EmailTest /></div>}

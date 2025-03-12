@@ -7,9 +7,7 @@ import { useTreatingCalendar } from "../hooks/useTreatingCalendar";
 import { DebugControls } from "./DebugControls";
 import { NextTreatingInfo } from "./NextTreatingInfo";
 import { useAuth } from "../contexts/AuthContext";
-import { useTeamInfo } from "../hooks/useTeamInfo";
 import { showNotification } from "../utils/notification";
-import { getUserId } from "../lib/userIdUtils";
 import "./TreatingCalendar.css";
 
 interface TreatingCalendarProps {
@@ -19,13 +17,10 @@ interface TreatingCalendarProps {
 export default function TreatingCalendar({ className }: TreatingCalendarProps) {
     // 从 useTreatingCalendar 获取邮件发送方法
     const { sendHostNotification, sendTeamNotification } = useTreatingCalendar();
-    
+
     // 获取认证和团队创建者状态
     const { user } = useAuth();
-    const { isTeamCreator } = useTeamInfo();
-    const [isCreator, setIsCreator] = useState(false);
-    const [checkingCreator, setCheckingCreator] = useState(true);
-    
+
     // 直接从store获取状态和方法
     const {
         // State
@@ -68,11 +63,12 @@ export default function TreatingCalendar({ className }: TreatingCalendarProps) {
         setDebugDate,
         setDebugMode,
         fetchData,
+        isCreator,
     } = useTreatingStore();
 
     // 添加 activeTab 状态
     const [activeTab, setActiveTab] = useState<"calendar" | "people">("calendar");
-    
+
     // 添加视图类型状态
     const [viewType, setViewType] = useState<"month" | "year">("month");
 
@@ -116,56 +112,23 @@ export default function TreatingCalendar({ className }: TreatingCalendarProps) {
         console.log("TreatingCalendar rendered with persons:", persons);
     }, [persons]);
 
-    // 检查用户是否是团队创建者
-    useEffect(() => {
-        const checkCreatorStatus = async () => {
-            if (user) {
-                const creator = await isTeamCreator(getUserId());
-                setIsCreator(creator);
-            } else {
-                setIsCreator(false);
-            }
-            setCheckingCreator(false);
-        };
-        
-        checkCreatorStatus();
-    }, [user, isTeamCreator]);
-
-    // 权限检查函数
-    const checkPermission = () => {
-        if (checkingCreator) {
-            showNotification('Checking permissions...', 'info');
-            return false;
-        }
-        
-        if (!user) {
-            showNotification('You need to sign in to modify team data', 'error');
-            return false;
-        }
-        
-        if (!isCreator) {
-            showNotification('Only the team creator can modify team data', 'error');
-            return false;
-        }
-        
-        return true;
-    };
-
     // 包装需要权限的操作
     const handleRemovePerson = async (id: string) => {
-        if (!checkPermission()) return;
         await removePerson(id);
     };
 
     const handleAddPerson = async () => {
-        if (!checkPermission()) return;
         await addPerson();
     };
 
     const handleChangeSortType = (type: SortType) => {
-        if (!checkPermission()) return;
         changeSortType(type);
-        showNotification(`Schedule generated with ${type === SortType.ByName ? 'name' : type === SortType.Random ? 'random' : 'addition'} order`, 'success');
+        showNotification(
+            `Schedule generated with ${
+                type === SortType.ByName ? "name" : type === SortType.Random ? "random" : "addition"
+            } order`,
+            "success"
+        );
     };
 
     // 渲染日历单元格
@@ -417,10 +380,10 @@ export default function TreatingCalendar({ className }: TreatingCalendarProps) {
                                 {Array.from({ length: 12 }, (_, i) => i + 1).map((month) => {
                                     // 获取当月所有的星期四
                                     const thursdays: CalendarDate[] = [];
-                                    
+
                                     // 计算当月的天数
                                     const daysInMonth = new Date(currentYear, month, 0).getDate();
-                                    
+
                                     // 遍历当月的每一天，找出所有星期四
                                     for (let day = 1; day <= daysInMonth; day++) {
                                         const date = new CalendarDate(currentYear, month, day);
@@ -431,10 +394,12 @@ export default function TreatingCalendar({ className }: TreatingCalendarProps) {
                                     }
 
                                     return (
-                                        <div 
-                                            key={month} 
+                                        <div
+                                            key={month}
                                             className={`border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow ${
-                                                month === currentMonth ? 'border-blue-500 bg-blue-50' : 'border-gray-200'
+                                                month === currentMonth
+                                                    ? "border-blue-500 bg-blue-50"
+                                                    : "border-gray-200"
                                             }`}
                                             onClick={() => {
                                                 setCurrentMonth(month);
@@ -451,7 +416,9 @@ export default function TreatingCalendar({ className }: TreatingCalendarProps) {
                                                             const person = getPersonForDate(thursday);
                                                             return (
                                                                 <li key={thursday.toString()} className="text-sm">
-                                                                    <span className="text-gray-600">{thursday.day}: </span>
+                                                                    <span className="text-gray-600">
+                                                                        {thursday.day}:{" "}
+                                                                    </span>
                                                                     <span className="font-medium text-gray-800">
                                                                         {person ? person.name : "Unassigned"}
                                                                     </span>
@@ -546,8 +513,14 @@ export default function TreatingCalendar({ className }: TreatingCalendarProps) {
                                         sortType === SortType.ByName
                                             ? "bg-blue-100 text-blue-700"
                                             : "bg-gray-100 text-gray-700"
-                                    } ${(!user || !isCreator) ? "opacity-50 cursor-not-allowed" : ""}`}
-                                    title={isCreator ? "Generate 12-month schedule ordered by name" : "Only team creator can generate schedule"}
+                                    } ${!user || !isCreator ? "opacity-50 cursor-not-allowed" : ""}`}
+                                    title={
+                                        !user
+                                            ? "Please login first"
+                                            : isCreator
+                                            ? "Generate 12-month schedule ordered by name"
+                                            : "Only team creator can generate schedule"
+                                    }
                                     disabled={!user || !isCreator}
                                 >
                                     Name
@@ -558,8 +531,14 @@ export default function TreatingCalendar({ className }: TreatingCalendarProps) {
                                         sortType === SortType.Random
                                             ? "bg-blue-100 text-blue-700"
                                             : "bg-gray-100 text-gray-700"
-                                    } ${(!user || !isCreator) ? "opacity-50 cursor-not-allowed" : ""}`}
-                                    title={isCreator ? "Generate 12-month schedule with randomized order" : "Only team creator can generate schedule"}
+                                    } ${!user || !isCreator ? "opacity-50 cursor-not-allowed" : ""}`}
+                                    title={
+                                        !user
+                                            ? "Please login first"
+                                            : isCreator
+                                            ? "Generate 12-month schedule with randomized order"
+                                            : "Only team creator can generate schedule"
+                                    }
                                     disabled={!user || !isCreator}
                                 >
                                     Random
@@ -570,8 +549,14 @@ export default function TreatingCalendar({ className }: TreatingCalendarProps) {
                                         sortType === SortType.ByAddOrder
                                             ? "bg-blue-100 text-blue-700"
                                             : "bg-gray-100 text-gray-700"
-                                    } ${(!user || !isCreator) ? "opacity-50 cursor-not-allowed" : ""}`}
-                                    title={isCreator ? "Generate 12-month schedule ordered by when members were added" : "Only team creator can generate schedule"}
+                                    } ${!user || !isCreator ? "opacity-50 cursor-not-allowed" : ""}`}
+                                    title={
+                                        !user
+                                            ? "Please login first"
+                                            : isCreator
+                                            ? "Generate 12-month schedule ordered by when members were added"
+                                            : "Only team creator can generate schedule"
+                                    }
                                     disabled={!user || !isCreator}
                                 >
                                     Order
@@ -580,20 +565,26 @@ export default function TreatingCalendar({ className }: TreatingCalendarProps) {
                             <button
                                 onClick={() => {
                                     if (!user) {
-                                        showNotification('You need to sign in to add team members', 'error');
+                                        showNotification("You need to sign in to add team members", "error");
                                         return;
                                     }
                                     if (!isCreator) {
-                                        showNotification('Only the team creator can add team members', 'error');
+                                        showNotification("Only the team creator can add team members", "error");
                                         return;
                                     }
                                     setNewPersonFormOpen(!newPersonFormOpen);
                                 }}
                                 className={`px-2 py-1.5 md:px-3 md:py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-xs md:text-sm ${
-                                    (!user || !isCreator) ? "opacity-50 cursor-not-allowed" : ""
+                                    !user || !isCreator ? "opacity-50 cursor-not-allowed" : ""
                                 }`}
                                 disabled={!user || !isCreator}
-                                title={!isCreator ? "Only team creator can add team members" : "Add team member"}
+                                title={
+                                    !user
+                                        ? "Please login first"
+                                        : isCreator
+                                        ? "Add team member"
+                                        : "Only team creator can add team members"
+                                }
                             >
                                 {newPersonFormOpen ? "Cancel" : "Add Person"}
                             </button>
@@ -700,7 +691,7 @@ export default function TreatingCalendar({ className }: TreatingCalendarProps) {
                                                 <button
                                                     onClick={() => handleRemovePerson(person.id)}
                                                     className={`px-2 py-1 text-xs rounded-md bg-red-100 text-red-700 hover:bg-red-200 ${
-                                                        (!user || !isCreator) ? "opacity-50 cursor-not-allowed" : ""
+                                                        !user || !isCreator ? "opacity-50 cursor-not-allowed" : ""
                                                     }`}
                                                     disabled={!user || !isCreator}
                                                 >

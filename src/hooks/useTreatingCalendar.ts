@@ -5,6 +5,7 @@ import { useTreatingStore } from "../stores/treatingStore";
 import { getAppBaseUrl } from "../lib/urlUtils";
 import { supabase } from "../lib/supabase";
 import { CalendarDate, getLocalTimeZone } from "@internationalized/date";
+import { getUserId } from "../lib/userIdUtils";
 
 // 这个钩子现在只处理邮件通知等特殊逻辑，不再导出store的内容
 export function useTreatingCalendar() {
@@ -52,8 +53,9 @@ export function useTreatingCalendar() {
             const { data: templateData, error: templateError } = await supabase
                 .from('email_templates')
                 .select('*')
+                .eq('userId', getUserId())
                 .eq('template_type', 'host_notification')
-                .single();
+                .maybeSingle();
                 
             if (templateError && templateError.code !== 'PGRST116') {
                 throw templateError;
@@ -143,8 +145,9 @@ export function useTreatingCalendar() {
             const { data: templateData, error: templateError } = await supabase
                 .from('email_templates')
                 .select('*')
+                .eq('userId', getUserId())
                 .eq('template_type', 'team_notification')
-                .single();
+                .maybeSingle();
                 
             if (templateError && templateError.code !== 'PGRST116') {
                 throw templateError;

@@ -1,12 +1,13 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { Session, User } from '@supabase/supabase-js';
 import { supabase } from '../lib/supabase';
+import { User, Session } from '@supabase/supabase-js';
+import { setTreatingStoreUser } from '../stores/treatingStore';
 
 // Define the context type
 type AuthContextType = {
-  session: Session | null;
-  user: User | null;
   loading: boolean;
+  user: User | null;
+  session: Session | null;
   signInWithGoogle: () => Promise<{
     error: Error | null;
     data: { provider: string; url: string | null } | null;
@@ -27,9 +28,9 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 // Provider component
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [session, setSession] = useState<Session | null>(null);
-  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState<User | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
 
   // 获取重定向URL的辅助函数
   const getRedirectUrl = () => {
@@ -49,6 +50,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setSession(session);
       setUser(session?.user ?? null);
       setLoading(false);
+      
+      // 更新treatingStore中的用户信息
+      setTreatingStoreUser(session?.user ?? null, session);
     });
 
     // Listen for auth changes
@@ -57,6 +61,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setSession(session);
         setUser(session?.user ?? null);
         setLoading(false);
+        
+        // 更新treatingStore中的用户信息
+        setTreatingStoreUser(session?.user ?? null, session);
       }
     );
 

@@ -6,6 +6,7 @@ import { useEmailTemplate } from '../hooks/useEmailTemplate';
 import { getUserId } from '../lib/userIdUtils';
 import { useTeamInfo } from '../hooks/useTeamInfo';
 import { showNotification } from '../utils/notification';
+import { useTreatingStore } from '../stores/treatingStore';
 
 interface SettingsProps {
   showSettings: boolean;
@@ -21,13 +22,15 @@ export default function Settings({
   personnel, 
   schedule,
   fetchData,
-  isCreator = false
 }: SettingsProps) {
   const [activeTab, setActiveTab] = useState('export');
   const [emailSubject, setEmailSubject] = useState<string>('');
   const [emailTemplate, setEmailTemplate] = useState<string>('');
   const [teamEmailSubject, setTeamEmailSubject] = useState<string>('');
   const [teamEmailTemplate, setTeamEmailTemplate] = useState<string>('');
+  
+  // 使用treatingStore中的checkPermission方法
+  const { checkPermission } = useTreatingStore();
   
   // Use the email template hook
   const { 
@@ -72,15 +75,6 @@ export default function Settings({
     return nextThursday;
   };
 
-  // Add a check for creator permissions
-  const checkPermission = () => {
-    if (!isCreator) {
-      showNotification('You need to sign in as the team creator to modify settings', 'error');
-      return false;
-    }
-    return true;
-  };
-
   // Export data functionality
   const exportData = () => {
     // Allow export for all users
@@ -109,8 +103,8 @@ export default function Settings({
 
   // Import data functionality
   const importData = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (!isCreator) {
-      showNotification('Only the team creator can import data', 'error');
+    if (!checkPermission('import data')) {
+      showNotification('You do not have permission to import data', 'error');
       return;
     }
     
@@ -162,7 +156,10 @@ export default function Settings({
 
   // Save email template
   const saveEmailTemplate = async () => {
-    if (!checkPermission()) return;
+    if (!checkPermission('save email template')) {
+      showNotification('You do not have permission to save email templates', 'error');
+      return;
+    }
     
     try {
       // Update host template in database
@@ -180,7 +177,10 @@ export default function Settings({
 
   // Reset email template
   const resetEmailTemplate = async () => {
-    if (!checkPermission()) return;
+    if (!checkPermission('reset email template')) {
+      showNotification('You do not have permission to reset email templates', 'error');
+      return;
+    }
     
     try {
       await resetTemplates();
@@ -193,14 +193,20 @@ export default function Settings({
 
   // Handle team notification toggle
   const handleTeamNotificationToggle = async (enabled: boolean) => {
-    if (!checkPermission()) return;
+    if (!checkPermission('toggle team notification')) {
+      showNotification('You do not have permission to change notification settings', 'error');
+      return;
+    }
     
     await toggleTeamNotifications(enabled);
   };
 
   // Handle host notification toggle
   const handleHostNotificationToggle = async (enabled: boolean) => {
-    if (!checkPermission()) return;
+    if (!checkPermission('toggle host notification')) {
+      showNotification('You do not have permission to change notification settings', 'error');
+      return;
+    }
     
     await toggleHostNotifications(enabled);
   };
