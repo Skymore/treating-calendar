@@ -54,7 +54,7 @@ export default function TreatingCalendar({ className }: TreatingCalendarProps) {
         fetchData,
         // generateSchedule,
         changeSortType,
-        sendNotification,
+        // sendNotification,
         prevMonth,
         nextMonth,
         getMonthName,

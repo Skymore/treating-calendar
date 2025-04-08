@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Personnel, HostSchedule } from '../types/types';
 import { supabase } from '../lib/supabase';
-import { parseDate, today, getLocalTimeZone, CalendarDate } from "@internationalized/date";
+import { today, getLocalTimeZone, CalendarDate } from "@internationalized/date";
 import { useEmailTemplate } from '../hooks/useEmailTemplate';
 import { getUserId } from '../lib/userIdUtils';
 
@@ -15,7 +15,7 @@ interface SettingsProps {
 
 export default function Settings({ 
   showSettings, 
-  setShowSettings, 
+  // setShowSettings, 
   personnel, 
   schedule,
   fetchData

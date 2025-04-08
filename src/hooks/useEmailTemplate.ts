@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
+import { getUserId } from '../lib/userIdUtils';
 
 export interface EmailTemplate {
   id: string;
@@ -128,7 +129,8 @@ This is a friendly reminder that you are scheduled to treat the team on {date} (
 
 Please make necessary preparations. If you have any questions or cannot fulfill this duty on the scheduled date, please contact the team lead as soon as possible to arrange an alternative.
 
-Thank you for your cooperation!`
+Thank you for your cooperation!`,
+            userId: getUserId(),
           })
           .select()
           .single();
@@ -155,7 +157,8 @@ This is a friendly reminder that {name} is scheduled to treat the team on {date}
 
 Please remember to join!
 
-Have a great day!`
+Have a great day!`,
+            userId: getUserId(),
           })
           .select()
           .single();
@@ -185,12 +188,14 @@ Have a great day!`
             subject,
             html_content: htmlContent,
             text_content: textContent || null,
+            userId: getUserId(),
           })
           .select()
           .single();
         
         if (error) throw error;
         if (data) setHostTemplate(data as EmailTemplate);
+        console.log('Host template created:', data);
       } else {
         // Update existing template
         const { data, error } = await supabase
@@ -200,6 +205,7 @@ Have a great day!`
             html_content: htmlContent,
             text_content: textContent || null,
             updated_at: new Date().toISOString(),
+            userId: getUserId(),
           })
           .eq('id', hostTemplate.id)
           .select()
@@ -207,6 +213,7 @@ Have a great day!`
         
         if (error) throw error;
         if (data) setHostTemplate(data as EmailTemplate);
+        console.log('Host template updated:', data);
       }
     } catch (err) {
       console.error('Error updating host template:', err);
@@ -233,12 +240,14 @@ Have a great day!`
             subject,
             html_content: htmlContent,
             text_content: textContent || null,
+            userId: getUserId(),
           })
           .select()
           .single();
         
         if (error) throw error;
         if (data) setTeamTemplate(data as EmailTemplate);
+        console.log('Team template created:', data);
       } else {
         // Update existing template
         const { data, error } = await supabase
@@ -248,6 +257,7 @@ Have a great day!`
             html_content: htmlContent,
             text_content: textContent || null,
             updated_at: new Date().toISOString(),
+            userId: getUserId(),
           })
           .eq('id', teamTemplate.id)
           .select()
@@ -255,6 +265,7 @@ Have a great day!`
         
         if (error) throw error;
         if (data) setTeamTemplate(data as EmailTemplate);
+        console.log('Team template updated:', data);
       }
     } catch (err) {
       console.error('Error updating team template:', err);
