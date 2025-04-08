@@ -6,6 +6,9 @@ import { supabase } from "../lib/supabase";
 import { useEmailNotification } from "./useEmailNotification";
 import { useEmailTemplate } from "./useEmailTemplate";
 import { getUserId } from "../lib/userIdUtils";
+import { getAppBaseUrl } from "../lib/urlUtils";
+import { getPersonnelForTeam, generateScheduleEntries } from "../lib/personnelService";
+import { useTeamInfo } from "./useTeamInfo";
 
 export function useTreatingCalendar() {
     // State management
@@ -359,7 +362,7 @@ export function useTreatingCalendar() {
         }
     };
 
-    // Send notification to host
+    // Send host notification
     const sendHostNotification = async () => {
         let nextThursday = getToday();
         while (!isThursday(nextThursday)) {
@@ -423,7 +426,7 @@ export function useTreatingCalendar() {
                 subject,
                 content,
                 "View Calendar",
-                window.location.href
+                getAppBaseUrl() + window.location.pathname + window.location.search
             );
 
             if (result.success) {
@@ -445,7 +448,7 @@ export function useTreatingCalendar() {
         }
     };
 
-    // Send notification to team
+    // Send team notification
     const sendTeamNotification = async () => {
         let nextThursday = getToday();
         while (!isThursday(nextThursday)) {
@@ -512,7 +515,7 @@ export function useTreatingCalendar() {
                 subject,
                 content,
                 "View Calendar",
-                window.location.href
+                getAppBaseUrl() + window.location.pathname + window.location.search
             );
 
             if (result.success) {

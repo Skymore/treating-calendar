@@ -165,6 +165,7 @@ You can easily deploy this application to Vercel by following these steps:
    - VITE_SUPABASE_URL: your_supabase_url
    - VITE_SUPABASE_ANON_KEY: your_supabase_anon_key
    - RESEND_API_KEY: your_resend_api_key
+   - VITE_APP_URL: your_production_url (e.g., https://your-app-domain.com)
 
 6. Click "Deploy"
 
