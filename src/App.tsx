@@ -43,7 +43,7 @@ export default function App() {
           <div className="mb-4 md:mb-0">
             <h1 className="text-2xl font-bold text-blue-600">Thursday Treating Calendar</h1>
             <p className="text-gray-600">
-              {teamLoading ? 'Loading...' : (teamInfo?.teamName || 'My Team')} - Manage your team's Thursday treating schedule
+              {teamLoading ? 'Loading...' : (teamInfo?.teamName || 'My Team')} - Manage Thursday treating schedule
             </p>
           </div>
           <div className="flex overflow-x-auto whitespace-nowrap pb-2 w-full md:w-auto">
