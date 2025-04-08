@@ -2,19 +2,18 @@
 
 ---
 
-I'm excited to share my recently completed project - Thursday Treating Calendar! 🚀
+Excited to share my newest project - Thursday Treating Calendar! 🚀
 
-This is a team rotation management application built with React+TypeScript, focused on solving the fair distribution problem for our team's Thursday treating activities.
+Built with React+TypeScript+Vite+Supabase, this app solves our team's Thursday treating rotation problem through a unique hostOffset mechanism that ensures fairness when team members join or leave.
 
-🔍 Key highlights:
-- Designed a unique hostOffset mechanism that solves fairness issues when new members join
-- Built with React+TS+Vite+Supabase+Tailwind tech stack
-- Implemented automatic scheduling, email reminders, and an intuitive calendar interface
+🔍 Tech highlights:
+- Edge Functions for low-latency global performance
+- Resend API for reliable email notifications
+- Supabase for backend database and authentication
+- Fair distribution algorithm with hostOffset balancing
 
-💡 My biggest takeaway was solving a seemingly simple but deep business problem: how to ensure treating duties remain fairly distributed even as team members come and go. Through the hostOffset mechanism, new members neither get an unfair advantage just for joining nor are immediately burdened with treating responsibilities.
+My biggest takeaway: even seemingly simple rotation systems can benefit from thoughtful technical design. New members neither get unfair advantages nor immediate burdens - the system maintains balance automatically.
 
-This project reaffirms that technology's value lies in solving real problems, even for something as simple as team activity scheduling.
+Check it out: [treating.ruit.me](https://treating.ruit.me)
 
-✨ Check out the live application: [treating.ruit.me](https://treating.ruit.me)
-
-#React #TypeScript #Supabase #TeamCollaboration #ProjectManagement #TechnicalSolutions 
+#React #TypeScript #Supabase #EdgeFunctions #ResendAPI 

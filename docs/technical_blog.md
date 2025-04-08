@@ -20,6 +20,7 @@ The project utilizes the following technology stack:
 - **前端框架 | Frontend Framework**: React + TypeScript，利用强类型提高代码质量和开发效率 (leveraging strong typing to improve code quality and development efficiency)
 - **构建工具 | Build Tool**: Vite，享受其快速的开发和构建体验 (enjoying its fast development and build experience)
 - **后端数据库 | Backend Database**: Supabase，作为Backend-as-a-Service解决方案 (as a Backend-as-a-Service solution)
+- **边缘计算 | Edge Computing**: Edge Functions，在CDN边缘节点运行无服务器函数，降低延迟，提高性能 (serverless functions running at CDN edge nodes, reducing latency and improving performance)
 - **样式处理 | Styling**: Tailwind CSS，实现快速响应式设计 (implementing quick responsive design)
 - **日期处理 | Date Handling**: @internationalized/date，处理复杂的日期计算 (handling complex date calculations)
 - **通知系统 | Notification System**: Resend API，发送邮件提醒 (sending email reminders)
@@ -86,9 +87,9 @@ This mechanism creates a balanced and fair rotation system.
 
 ### 3. 电子邮件通知 | Email Notifications
 
-为了确保团队成员记得他们的请客任务，系统集成了Resend API发送提醒邮件：
+为了确保团队成员记得他们的请客任务，系统集成了Resend API发送提醒邮件。Resend API作为现代电子邮件发送解决方案，提供了高可靠性、良好的可交付性和简洁的开发体验，很好地满足了项目的通知需求：
 
-To ensure team members remember their treating duties, the system integrates Resend API to send reminder emails:
+To ensure team members remember their treating duties, the system integrates Resend API to send reminder emails. As a modern email delivery solution, Resend API offers high reliability, good deliverability, and a clean developer experience, perfectly meeting the notification needs of the project:
 
 ```typescript
 // Email notification system using Resend API
@@ -110,6 +111,10 @@ const sendReminder = async (host, date) => {
   });
 }
 ```
+
+结合Edge Functions，邮件通知系统能够以低延迟高效地处理请求，即使在全球范围内也能保持出色的性能。
+
+Combined with Edge Functions, the email notification system can process requests efficiently with low latency, maintaining excellent performance even on a global scale.
 
 ### 4. 数据库设计 | Database Design
 
