@@ -11,7 +11,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@heroui/react": "^0.6.0",
+    "@heroui/react": "^2.7.2",
     "@iconify/react": "^4.1.1",
     "@internationalized/date": "^3.5.2",
     "@react-aria/i18n": "3.12.5",

@@ -34,29 +34,31 @@ The application uses the following tables in Supabase:
    - `hostingCount`: Integer (number of times treated)
    - `lastHosted`: Timestamp with timezone (when the person last treated)
    - `hostOffset`: Integer (offset value for fair scheduling when joining mid-cycle)
-   - `team_id`: UUID (foreign key to teams table)
+   - `userId`: UUID (foreign key to teams table)
 
 2. `host_schedule` table:
    - `id`: UUID (primary key)
    - `personnelId`: UUID (foreign key to personnel)
    - `date`: Date string
    - `notified`: Boolean
+   - `completed`: Boolean
    - `team_id`: UUID (foreign key to teams table)
 
-3. `treating_history` table:
-   - `id`: UUID (primary key)
-   - `person_id`: UUID (foreign key to personnel, with cascade delete)
-   - `date`: Date (when the treating event occurred)
-   - `completed`: Boolean (whether the treating event was completed)
-   - `created_at`: Timestamp with timezone (when the record was created)
-   - `team_id`: UUID (foreign key to teams table)
+3. `teams` table:
+   - `userId`: UUID (primary key)
+   - `teamName`: String
+   - `createdAt`: Timestamp with timezone
 
-4. `teams` table:
+4. `email_templates` table:
    - `id`: UUID (primary key)
-   - `team_name`: String
-   - `team_email`: String (optional)
+   - `template_type`: String
+   - `template_name`: String
+   - `subject`: String
+   - `html_content`: String
+   - `text_content`: String
    - `created_at`: Timestamp with timezone
-   - `created_by`: UUID (reference to the creator)
+   - `updated_at`: Timestamp with timezone
+   - `userId`: UUID (foreign key to teams table)
 
 ### The hostOffset Mechanism
 
@@ -79,67 +81,6 @@ Example scenario:
    - D: 0 + 1 = 1
 5. Members C and D have equal priority (both have calculated value 1), followed by B, then A
 6. This creates a balanced and fair rotation system for everyone
-
-### Database Setup
-
-To set up the database in Supabase:
-
-1. Log in to your Supabase dashboard
-2. Navigate to the SQL Editor
-3. Create a new query and paste the following SQL:
-
-```sql
--- Create teams table
-CREATE TABLE teams (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  team_name TEXT NOT NULL,
-  team_email TEXT,
-  created_at TIMESTAMPTZ DEFAULT now(),
-  created_by UUID
-);
-
--- Create personnel table
-CREATE TABLE personnel (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  name TEXT NOT NULL,
-  email TEXT NOT NULL,
-  phone TEXT,
-  "hostingCount" INTEGER DEFAULT 0,
-  "lastHosted" TIMESTAMPTZ,
-  "hostOffset" INTEGER DEFAULT 0,
-  team_id UUID REFERENCES teams(id) ON DELETE CASCADE
-);
-
--- Create host_schedule table
-CREATE TABLE host_schedule (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  "personnelId" UUID NOT NULL REFERENCES personnel(id) ON DELETE CASCADE,
-  date DATE NOT NULL,
-  notified BOOLEAN DEFAULT false,
-  team_id UUID REFERENCES teams(id) ON DELETE CASCADE
-);
-
--- Create treating history table
-CREATE TABLE treating_history (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  person_id UUID NOT NULL REFERENCES personnel(id) ON DELETE CASCADE,
-  date DATE NOT NULL,
-  completed BOOLEAN DEFAULT false,
-  created_at TIMESTAMPTZ DEFAULT now(),
-  team_id UUID REFERENCES teams(id) ON DELETE CASCADE
-);
-
--- Create indexes for better query performance
-CREATE INDEX idx_host_schedule_date ON host_schedule(date);
-CREATE INDEX idx_host_schedule_personnel ON host_schedule("personnelId");
-CREATE INDEX idx_treating_history_person ON treating_history(person_id);
-CREATE INDEX idx_treating_history_date ON treating_history(date);
-CREATE INDEX idx_personnel_team ON personnel(team_id);
-CREATE INDEX idx_host_schedule_team ON host_schedule(team_id);
-CREATE INDEX idx_treating_history_team ON treating_history(team_id);
-```
-
-4. Run the query to create the tables and indexes
 
 ## Getting Started
 
@@ -173,7 +114,9 @@ VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
 RESEND_API_KEY=your_resend_api_key
 ```
 
-4. Start the development server
+4. Set up the database tables
+
+5. Start the development server
 ```bash
 npm run dev
 ```
@@ -226,27 +169,3 @@ You can easily deploy this application to Vercel by following these steps:
 6. Click "Deploy"
 
 7. After the deployment is complete, you can access your application at the provided Vercel URL
-
-### Custom Domain (Optional)
-
-To add a custom domain to your Vercel deployment:
-
-1. Go to your Vercel project dashboard
-2. Click on "Settings" > "Domains"
-3. Add your domain and follow the verification steps
-
-### Automatic Deployments
-
-Vercel automatically deploys your application when you push changes to your Git repository. You can configure deployment settings in the Vercel dashboard.
-
-## Contributing
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
