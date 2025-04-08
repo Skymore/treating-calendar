@@ -40,9 +40,10 @@ The application uses the following tables in Supabase:
    - `id`: UUID (primary key)
    - `personnelId`: UUID (foreign key to personnel)
    - `date`: Date string
-   - `notified`: Boolean
+   - `teamNotified`: Boolean
+   - `hostNotified`: Boolean
    - `completed`: Boolean
-   - `team_id`: UUID (foreign key to teams table)
+   - `userId`: UUID (foreign key to teams table)
 
 3. `teams` table:
    - `userId`: UUID (primary key)

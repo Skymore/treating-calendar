@@ -272,7 +272,8 @@ export function useTreatingCalendar() {
                 date: dateStr,
                 personnelId: personnelId,
                 completed: false,
-                notified: false,
+                hostNotified: false,
+                teamNotified: false,
             };
 
             schedules.push(hostSchedule);
@@ -322,42 +323,6 @@ export function useTreatingCalendar() {
         setSortType(type);
         // Directly use current person list to generate schedule without balancing
         generateSchedule(persons, type);
-    };
-
-    // Send notification
-    const sendNotification = async () => {
-        let nextThursday = getToday();
-        while (!isThursday(nextThursday)) {
-            const nextDate = nextThursday.toDate(getLocalTimeZone());
-            nextDate.setDate(nextDate.getDate() + 1);
-            nextThursday = new CalendarDate(nextDate.getFullYear(), nextDate.getMonth() + 1, nextDate.getDate());
-        }
-
-        const nextPerson = getPersonForDate(nextThursday);
-        if (!nextPerson) {
-            alert("No person found for next Thursday.");
-            return;
-        }
-
-        try {
-            // In a real application, call a backend API to send emails
-            // Here we just update the notification status
-            const { error } = await supabase
-                .from("host_schedule")
-                .update({ notified: true })
-                .eq("date", nextThursday.toString());
-
-            if (error) throw error;
-
-            alert(
-                `Notification sent to everyone:\nNext Thursday (${nextThursday.toString()}) treating person: ${
-                    nextPerson.name
-                }`
-            );
-        } catch (error) {
-            console.error("Failed to send notification:", error);
-            alert("Failed to send notification. Please try again.");
-        }
     };
 
     // Send host notification
@@ -431,7 +396,7 @@ export function useTreatingCalendar() {
                 // Update notification status in database
                 const { error } = await supabase
                     .from("host_schedule")
-                    .update({ notified: true })
+                    .update({ hostNotified: true })
                     .eq("date", nextThursday.toString());
 
                 if (error) throw error;
@@ -520,7 +485,7 @@ export function useTreatingCalendar() {
                 // Update notification status in database
                 const { error } = await supabase
                     .from("host_schedule")
-                    .update({ notified: true })
+                    .update({ teamNotified: true })
                     .eq("date", nextThursday.toString());
 
                 if (error) throw error;
@@ -913,7 +878,6 @@ export function useTreatingCalendar() {
         fetchData,
         generateSchedule,
         changeSortType,
-        sendNotification,
         sendHostNotification,
         sendTeamNotification,
         prevMonth,

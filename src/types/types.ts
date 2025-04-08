@@ -21,7 +21,8 @@ export interface HostSchedule {
   userId: string;
   personnelId: string;
   date: string;
-  notified: boolean;
+  hostNotified: boolean;
+  teamNotified: boolean;
   completed: boolean;
 }
 
