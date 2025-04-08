@@ -7,8 +7,6 @@ import { useEmailNotification } from "./useEmailNotification";
 import { useEmailTemplate } from "./useEmailTemplate";
 import { getUserId } from "../lib/userIdUtils";
 import { getAppBaseUrl } from "../lib/urlUtils";
-import { getPersonnelForTeam, generateScheduleEntries } from "../lib/personnelService";
-import { useTeamInfo } from "./useTeamInfo";
 
 export function useTreatingCalendar() {
     // State management
