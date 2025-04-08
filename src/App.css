@@ -55,4 +55,47 @@ p {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+/* 响应式布局适配 */
+@media (max-width: 768px) {
+  .container {
+    padding: 0.5rem;
+  }
+  
+  h1 {
+    font-size: 1.5rem;
+  }
+  
+  .treating-calendar .custom-calendar {
+    font-size: 0.875rem;
+  }
+  
+  /* 移动端日历布局优化 */
+  .custom-calendar {
+    min-width: 100%;
+    overflow-x: auto;
+  }
+  
+  /* 移动端按钮组样式 */
+  button {
+    width: auto;
+    min-width: 80px;
+  }
+}
+
+/* 添加滚动优化 */
+.overflow-x-auto {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* 提高移动端可点击元素的大小 */
+@media (max-width: 480px) {
+  button, 
+  select, 
+  input[type="button"],
+  input[type="submit"] {
+    min-height: 44px;
+  }
 } 

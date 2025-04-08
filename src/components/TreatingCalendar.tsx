@@ -110,9 +110,9 @@ export default function TreatingCalendar({ className }: TreatingCalendarProps) {
         <div className={`treating-calendar ${className || ""}`}>
             {/* Main header with navigation tabs */}
             <div className="bg-white rounded-lg shadow-sm mb-6 overflow-hidden">
-                <div className="flex border-b">
+                <div className="flex flex-wrap border-b">
                     <button
-                        className={`px-5 py-3 font-medium ${
+                        className={`px-3 py-2 md:px-5 md:py-3 text-sm md:text-base font-medium ${
                             activeTab === "calendar"
                                 ? "bg-blue-50 text-blue-700 border-b-2 border-blue-500"
                                 : "text-gray-600 hover:bg-gray-50"
@@ -122,7 +122,7 @@ export default function TreatingCalendar({ className }: TreatingCalendarProps) {
                         Calendar View
                     </button>
                     <button
-                        className={`px-5 py-3 font-medium ${
+                        className={`px-3 py-2 md:px-5 md:py-3 text-sm md:text-base font-medium ${
                             activeTab === "people"
                                 ? "bg-blue-50 text-blue-700 border-b-2 border-blue-500"
                                 : "text-gray-600 hover:bg-gray-50"
@@ -136,7 +136,7 @@ export default function TreatingCalendar({ className }: TreatingCalendarProps) {
 
                     {/* 添加调试模式按钮 */}
                     <button
-                        className={`px-5 py-3 font-medium ${
+                        className={`px-3 py-2 md:px-5 md:py-3 text-sm md:text-base font-medium ${
                             debugMode
                                 ? "bg-red-50 text-red-700 border-b-2 border-red-500"
                                 : "text-gray-600 hover:bg-gray-50"
@@ -156,7 +156,7 @@ export default function TreatingCalendar({ className }: TreatingCalendarProps) {
                             }
                         }}
                     >
-                        Debug Mode {debugMode ? "ON" : "OFF"}
+                        Debug {debugMode ? "ON" : "OFF"}
                     </button>
                 </div>
 
@@ -189,12 +189,12 @@ export default function TreatingCalendar({ className }: TreatingCalendarProps) {
             {/* Calendar view content */}
             {activeTab === "calendar" && (
                 <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-                    <div className="p-4 flex justify-between items-center border-b">
+                    <div className="p-4 flex flex-col md:flex-row justify-between items-start md:items-center border-b gap-y-4">
                         <h2 className="text-xl font-bold text-gray-800">
                             {getMonthName(currentMonth)} {currentYear}
                         </h2>
 
-                        <div className="flex items-center space-x-4">
+                        <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
                             <div className="flex rounded-md shadow-sm">
                                 <button
                                     onClick={prevMonth}
@@ -257,7 +257,7 @@ export default function TreatingCalendar({ className }: TreatingCalendarProps) {
                                     swapMode ? "bg-green-600 text-white" : "bg-gray-100 text-gray-700"
                                 }`}
                             >
-                                {swapMode ? "Exit Swap Mode" : "Swap Treating Order"}
+                                {swapMode ? "Exit Swap" : "Swap Order"}
                             </button>
                         </div>
                     </div>
@@ -277,7 +277,7 @@ export default function TreatingCalendar({ className }: TreatingCalendarProps) {
                         {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day, i) => (
                             <div
                                 key={day}
-                                className={`p-2 text-center text-sm font-medium ${
+                                className={`p-2 text-center text-xs md:text-sm font-medium ${
                                     i === 4 ? "bg-blue-50 text-blue-800" : "text-gray-500"
                                 }`}
                             >
@@ -289,7 +289,7 @@ export default function TreatingCalendar({ className }: TreatingCalendarProps) {
                     {/* Calendar days */}
                     <div className="grid grid-cols-7 auto-rows-fr">
                         {calendarDays.map((date, i) => (
-                            <div key={`${date.year}-${date.month}-${date.day}-${i}`} className="border-b border-r p-1">
+                            <div key={`${date.year}-${date.month}-${date.day}-${i}`} className="border-b border-r p-1 min-h-[60px] md:min-h-[80px]">
                                 {renderCalendarCell(date)}
                             </div>
                         ))}
@@ -329,35 +329,35 @@ export default function TreatingCalendar({ className }: TreatingCalendarProps) {
             {/* People management view */}
             {activeTab === "people" && (
                 <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-                    <div className="p-4 border-b flex justify-between items-center">
+                    <div className="p-4 border-b flex flex-col md:flex-row justify-between items-start md:items-center gap-y-4">
                         <h2 className="text-xl font-bold text-gray-800">Team Members</h2>
 
-                        <div className="flex space-x-3">
+                        <div className="flex overflow-x-auto whitespace-nowrap pb-2 w-full md:w-auto">
                             <button
                                 onClick={() => changeSortType(SortType.ByName)}
-                                className={`px-3 py-2 rounded-md ${
+                                className={`px-2 py-1.5 md:px-3 md:py-2 rounded-md text-xs md:text-sm mr-2 ${
                                     sortType === SortType.ByName
                                         ? "bg-blue-100 text-blue-700"
                                         : "bg-gray-100 text-gray-700"
                                 }`}
                                 title="Generate 6-month schedule ordered by name"
                             >
-                                Generate Name-Based Schedule
+                                Name-Based
                             </button>
                             <button
                                 onClick={() => changeSortType(SortType.Random)}
-                                className={`px-3 py-2 rounded-md ${
+                                className={`px-2 py-1.5 md:px-3 md:py-2 rounded-md text-xs md:text-sm mr-2 ${
                                     sortType === SortType.Random
                                         ? "bg-blue-100 text-blue-700"
                                         : "bg-gray-100 text-gray-700"
                                 }`}
                                 title="Generate 6-month schedule with randomized order"
                             >
-                                Generate Random Schedule
+                                Random
                             </button>
                             <button
                                 onClick={() => setNewPersonFormOpen(!newPersonFormOpen)}
-                                className="px-3 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                                className="px-2 py-1.5 md:px-3 md:py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-xs md:text-sm"
                             >
                                 {newPersonFormOpen ? "Cancel" : "Add Person"}
                             </button>
@@ -369,7 +369,7 @@ export default function TreatingCalendar({ className }: TreatingCalendarProps) {
                         <div className="p-4 bg-blue-50 border-b">
                             <div className="max-w-3xl mx-auto">
                                 <h3 className="font-medium text-blue-800 mb-3">Add New Team Member</h3>
-                                <div className="grid grid-cols-3 gap-4 mb-4">
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                                     <div>
                                         <label className="block text-sm font-medium text-gray-700 mb-1">Name *</label>
                                         <input
@@ -406,7 +406,7 @@ export default function TreatingCalendar({ className }: TreatingCalendarProps) {
                                 <div className="flex justify-end">
                                     <button
                                         onClick={addPerson}
-                                        className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                                        className="px-3 py-1.5 md:px-4 md:py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm md:text-base"
                                         disabled={!newName.trim() || !newEmail.trim()}
                                     >
                                         Add to Team
@@ -421,28 +421,28 @@ export default function TreatingCalendar({ className }: TreatingCalendarProps) {
                         <table className="w-full">
                             <thead className="bg-gray-50">
                                 <tr>
-                                    <th className="px-6 py-3 text-left text-sm font-medium text-gray-600 tracking-wider">
+                                    <th className="px-2 md:px-6 py-2 md:py-3 text-left text-xs md:text-sm font-medium text-gray-600 tracking-wider">
                                         Name
                                     </th>
-                                    <th className="px-6 py-3 text-left text-sm font-medium text-gray-600 tracking-wider">
+                                    <th className="px-2 md:px-6 py-2 md:py-3 text-left text-xs md:text-sm font-medium text-gray-600 tracking-wider hidden md:table-cell">
                                         Email
                                     </th>
-                                    <th className="px-6 py-3 text-left text-sm font-medium text-gray-600 tracking-wider">
+                                    <th className="px-2 md:px-6 py-2 md:py-3 text-left text-xs md:text-sm font-medium text-gray-600 tracking-wider hidden md:table-cell">
                                         Phone
                                     </th>
-                                    <th className="px-6 py-3 text-center text-sm font-medium text-gray-600 tracking-wider">
-                                        Treats <span className="text-gray-400 font-normal">(Count)</span>
+                                    <th className="px-2 md:px-6 py-2 md:py-3 text-center text-xs md:text-sm font-medium text-gray-600 tracking-wider">
+                                        Treats
                                     </th>
-                                    <th className="px-6 py-3 text-center text-sm font-medium text-gray-600 tracking-wider">
-                                        Future Hosting
+                                    <th className="px-2 md:px-6 py-2 md:py-3 text-center text-xs md:text-sm font-medium text-gray-600 tracking-wider">
+                                        Future
                                     </th>
-                                    <th className="px-6 py-3 text-center text-sm font-medium text-gray-600 tracking-wider">
+                                    <th className="px-2 md:px-6 py-2 md:py-3 text-center text-xs md:text-sm font-medium text-gray-600 tracking-wider hidden md:table-cell">
                                         Offset
                                     </th>
-                                    <th className="px-6 py-3 text-center text-sm font-medium text-gray-600 tracking-wider">
-                                        Calculated Value
+                                    <th className="px-2 md:px-6 py-2 md:py-3 text-center text-xs md:text-sm font-medium text-gray-600 tracking-wider hidden md:table-cell">
+                                        Value
                                     </th>
-                                    <th className="px-6 py-3 text-center text-sm font-medium text-gray-600 tracking-wider">
+                                    <th className="px-2 md:px-6 py-2 md:py-3 text-center text-xs md:text-sm font-medium text-gray-600 tracking-wider">
                                         Actions
                                     </th>
                                 </tr>
@@ -451,36 +451,37 @@ export default function TreatingCalendar({ className }: TreatingCalendarProps) {
                                 {persons && persons.length > 0 ? (
                                     persons.map((person) => (
                                         <tr key={person.id} className="hover:bg-gray-50">
-                                            <td className="px-6 py-4 whitespace-nowrap">
-                                                <div className="font-medium text-gray-900">{person.name}</div>
+                                            <td className="px-2 md:px-6 py-3 md:py-4 whitespace-nowrap">
+                                                <div className="font-medium text-sm md:text-base text-gray-900">{person.name}</div>
+                                                <div className="text-xs text-gray-500 md:hidden">{person.email}</div>
                                             </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                            <td className="px-2 md:px-6 py-3 md:py-4 whitespace-nowrap text-sm text-gray-600 hidden md:table-cell">
                                                 {person.email}
                                             </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                            <td className="px-2 md:px-6 py-3 md:py-4 whitespace-nowrap text-sm text-gray-600 hidden md:table-cell">
                                                 {person.phone || "—"}
                                             </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-center">
-                                                <span className="px-2 py-1 inline-flex text-sm leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                                            <td className="px-2 md:px-6 py-3 md:py-4 whitespace-nowrap text-center">
+                                                <span className="px-1.5 md:px-2 py-0.5 md:py-1 inline-flex text-xs md:text-sm leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
                                                     {person.hostingCount}
                                                 </span>
                                             </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-center">
-                                                <span className="px-2 py-1 inline-flex text-sm leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                            <td className="px-2 md:px-6 py-3 md:py-4 whitespace-nowrap text-center">
+                                                <span className="px-1.5 md:px-2 py-0.5 md:py-1 inline-flex text-xs md:text-sm leading-5 font-semibold rounded-full bg-green-100 text-green-800">
                                                     {calculateFutureHostingCounts(person.id)}
                                                 </span>
                                             </td>
-                                            <td className="px-6 py-4 text-center">
-                                                <span className="px-2 py-1 rounded-full bg-gray-100 text-gray-800">
+                                            <td className="px-2 md:px-6 py-3 md:py-4 text-center hidden md:table-cell">
+                                                <span className="px-1.5 md:px-2 py-0.5 md:py-1 rounded-full bg-gray-100 text-gray-800 text-xs md:text-sm">
                                                     {person.hostOffset}
                                                 </span>
                                             </td>
-                                            <td className="px-6 py-4 text-center">
-                                                <span className="px-2 py-1 rounded-full bg-indigo-100 text-indigo-800">
+                                            <td className="px-2 md:px-6 py-3 md:py-4 text-center hidden md:table-cell">
+                                                <span className="px-1.5 md:px-2 py-0.5 md:py-1 rounded-full bg-indigo-100 text-indigo-800 text-xs md:text-sm">
                                                     {calculateTreatingValue(person)}
                                                 </span>
                                             </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-center text-sm">
+                                            <td className="px-2 md:px-6 py-3 md:py-4 whitespace-nowrap text-center text-xs md:text-sm">
                                                 <button
                                                     onClick={() => removePerson(person.id)}
                                                     className="text-red-600 hover:text-red-800"
@@ -492,11 +493,11 @@ export default function TreatingCalendar({ className }: TreatingCalendarProps) {
                                     ))
                                 ) : (
                                     <tr>
-                                        <td colSpan={7} className="px-6 py-12 text-center text-gray-500">
-                                            <div className="mx-auto w-32 h-32 rounded-full bg-gray-100 flex items-center justify-center mb-4">
+                                        <td colSpan={8} className="px-2 md:px-6 py-8 md:py-12 text-center text-gray-500">
+                                            <div className="mx-auto w-24 h-24 md:w-32 md:h-32 rounded-full bg-gray-100 flex items-center justify-center mb-4">
                                                 <svg
                                                     xmlns="http://www.w3.org/2000/svg"
-                                                    className="h-16 w-16 text-gray-400"
+                                                    className="h-12 w-12 md:h-16 md:w-16 text-gray-400"
                                                     fill="none"
                                                     viewBox="0 0 24 24"
                                                     stroke="currentColor"
@@ -509,8 +510,8 @@ export default function TreatingCalendar({ className }: TreatingCalendarProps) {
                                                     />
                                                 </svg>
                                             </div>
-                                            <p className="text-lg">No team members added yet</p>
-                                            <p className="mt-1">
+                                            <p className="text-base md:text-lg">No team members added yet</p>
+                                            <p className="mt-1 text-xs md:text-sm">
                                                 Click the "Add Person" button to add your first team member.
                                             </p>
                                         </td>
@@ -524,7 +525,7 @@ export default function TreatingCalendar({ className }: TreatingCalendarProps) {
                     {persons.length > 0 && (
                         <div className="p-4 border-t">
                             <h3 className="font-medium text-gray-800 mb-2">Upcoming Schedule</h3>
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 mt-3">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mt-3">
                                 {schedule
                                     .filter((s) => {
                                         const scheduleDate = parseDate(s.date);
@@ -542,14 +543,14 @@ export default function TreatingCalendar({ className }: TreatingCalendarProps) {
                                                 className="border rounded-md p-3 bg-white shadow-sm"
                                             >
                                                 <div className="text-xs font-medium text-gray-500 mb-1">Thursday</div>
-                                                <div className="font-bold text-gray-800">
+                                                <div className="font-bold text-sm md:text-base text-gray-800">
                                                     {`${date.year}-${String(date.month).padStart(2, "0")}-${String(
                                                         date.day
                                                     ).padStart(2, "0")}`}
                                                 </div>
                                                 <div className="mt-2 flex items-center">
                                                     <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
-                                                    <div className="font-medium truncate">
+                                                    <div className="font-medium truncate text-sm md:text-base">
                                                         {person ? person.name : "Unassigned"}
                                                     </div>
                                                 </div>

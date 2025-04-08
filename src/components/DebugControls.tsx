@@ -47,13 +47,13 @@ export function DebugControls({ debugDate, setDebugDate, getMonthName, fetchData
   };
 
   return (
-    <div className="bg-red-50 p-3 flex items-center justify-between">
+    <div className="bg-red-50 p-3 flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
       <div className="text-sm text-red-700 font-medium">Debug Date:</div>
-      <div className="flex items-center space-x-2">
+      <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
         <select
           value={tempYear}
           onChange={(e) => setTempYear(parseInt(e.target.value))}
-          className="px-2 py-1 border rounded"
+          className="px-2 py-1 border rounded text-sm"
         >
           {Array.from({ length: 5 }, (_, i) => today(getLocalTimeZone()).year + i - 2).map(
             (year) => (
@@ -66,7 +66,7 @@ export function DebugControls({ debugDate, setDebugDate, getMonthName, fetchData
         <select
           value={tempMonth}
           onChange={(e) => setTempMonth(parseInt(e.target.value))}
-          className="px-2 py-1 border rounded"
+          className="px-2 py-1 border rounded text-sm"
         >
           {Array.from({ length: 12 }, (_, i) => i + 1).map((month) => (
             <option key={month} value={month}>
@@ -77,7 +77,7 @@ export function DebugControls({ debugDate, setDebugDate, getMonthName, fetchData
         <select
           value={tempDay}
           onChange={(e) => setTempDay(parseInt(e.target.value))}
-          className="px-2 py-1 border rounded"
+          className="px-2 py-1 border rounded text-sm"
         >
           {Array.from(
             { length: new Date(tempYear, tempMonth, 0).getDate() },
@@ -88,23 +88,27 @@ export function DebugControls({ debugDate, setDebugDate, getMonthName, fetchData
             </option>
           ))}
         </select>
-        <button
-          onClick={applyDateChange}
-          className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm"
-        >
-          Apply & Refresh
-        </button>
-        <button
-          onClick={refreshToToday}
-          className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 text-sm"
-        >
-          Refresh to Today
-        </button>
+        <div className="flex flex-wrap gap-2">
+          <button
+            onClick={applyDateChange}
+            className="px-2 py-1 md:px-3 md:py-1 bg-blue-600 text-white rounded hover:bg-blue-700 text-xs md:text-sm"
+          >
+            Apply & Refresh
+          </button>
+          <button
+            onClick={refreshToToday}
+            className="px-2 py-1 md:px-3 md:py-1 bg-red-600 text-white rounded hover:bg-red-700 text-xs md:text-sm"
+          >
+            Refresh to Today
+          </button>
+        </div>
       </div>
 
-      <div className="text-sm text-red-700">
-        Current Debug Date: <strong>{debugDate.toString()}</strong> vs. Actual Date:{" "}
-        <strong>{today(getLocalTimeZone()).toString()}</strong>
+      <div className="text-xs md:text-sm text-red-700 w-full md:w-auto mt-2 md:mt-0">
+        Current Debug: <strong>{debugDate.toString()}</strong>
+        <br className="md:hidden" /> 
+        <span className="hidden md:inline"> vs. </span>
+        Actual: <strong>{today(getLocalTimeZone()).toString()}</strong>
       </div>
     </div>
   );

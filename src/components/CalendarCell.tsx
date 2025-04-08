@@ -26,7 +26,7 @@ export function CalendarCell({
 }: CalendarCellProps) {
   return (
     <div
-      className={`relative w-full h-full min-h-[60px] p-1 cursor-pointer
+      className={`relative w-full h-full min-h-[45px] md:min-h-[60px] p-1 cursor-pointer
         ${!isCurrentMonth ? "text-gray-400" : ""}
         ${isToday ? "font-bold" : ""}
         ${isThursday && isCurrentMonth && !isPast ? "bg-blue-50" : ""}
@@ -37,15 +37,15 @@ export function CalendarCell({
       onClick={() => onSelect(date)}
     >
       <div
-        className={`absolute top-1.5 left-1.5 text-xs ${
-          isToday ? "bg-blue-500 text-white rounded-full w-5 h-5 flex items-center justify-center" : ""
+        className={`absolute top-1 left-1 md:top-1.5 md:left-1.5 text-[10px] md:text-xs ${
+          isToday ? "bg-blue-500 text-white rounded-full w-4 h-4 md:w-5 md:h-5 flex items-center justify-center" : ""
         }`}
       >
         {date.day}
       </div>
 
       {person && isThursday && (
-        <div className="absolute bottom-1 left-1 right-1 text-xs overflow-hidden text-ellipsis">
+        <div className="absolute bottom-0.5 md:bottom-1 left-0.5 md:left-1 right-0.5 md:right-1 text-[9px] md:text-xs overflow-hidden text-ellipsis">
           <div
             className={`${
               isSelected 
@@ -53,9 +53,11 @@ export function CalendarCell({
                 : isPast 
                   ? "bg-gray-200 text-gray-700" 
                   : "bg-blue-100 text-blue-800"
-            } rounded-sm px-1 py-0.5 text-center truncate`}
+            } rounded-sm px-0.5 md:px-1 py-0.5 text-center truncate`}
           >
-            {person.name}
+            {person.name?.length > 10 && window.innerWidth < 640 
+              ? `${person.name.substring(0, 8)}...` 
+              : person.name}
             {isPast && " ✓"}
           </div>
         </div>

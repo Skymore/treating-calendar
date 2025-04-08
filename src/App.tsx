@@ -39,35 +39,35 @@ export default function App() {
   return (
     <div className="container mx-auto p-4 max-w-6xl">
       <header className="mb-6 bg-white shadow-sm rounded-lg p-4">
-        <div className="flex justify-between items-center">
-          <div>
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
+          <div className="mb-4 md:mb-0">
             <h1 className="text-2xl font-bold text-blue-600">Thursday Treating Calendar</h1>
             <p className="text-gray-600">
               {teamLoading ? 'Loading...' : (teamInfo?.teamName || 'My Team')} - Manage your team's Thursday treating schedule
             </p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex overflow-x-auto whitespace-nowrap pb-2 w-full md:w-auto">
             <button 
-              className="px-4 py-2 bg-purple-50 hover:bg-purple-100 rounded-md text-purple-700 font-medium transition-colors"
+              className="px-2 py-1.5 md:px-4 md:py-2 bg-purple-50 hover:bg-purple-100 rounded-md text-purple-700 font-medium transition-colors text-xs md:text-base mr-2"
               onClick={() => setShowTeamInfo(!showTeamInfo)}
             >
-              {showTeamInfo ? 'Close Team Info' : 'Team Info'}
+              {showTeamInfo ? 'Close' : 'Team Info'}
             </button>
             <button 
-              className="px-4 py-2 bg-blue-50 hover:bg-blue-100 rounded-md text-blue-700 font-medium transition-colors"
+              className="px-2 py-1.5 md:px-4 md:py-2 bg-blue-50 hover:bg-blue-100 rounded-md text-blue-700 font-medium transition-colors text-xs md:text-base mr-2"
               onClick={() => setShowSettings(!showSettings)}
             >
-              {showSettings ? 'Close Settings' : 'Settings'}
+              {showSettings ? 'Close' : 'Settings'}
             </button>
             <button 
-              className="px-4 py-2 bg-green-50 hover:bg-green-100 rounded-md text-green-700 font-medium transition-colors"
+              className="px-2 py-1.5 md:px-4 md:py-2 bg-green-50 hover:bg-green-100 rounded-md text-green-700 font-medium transition-colors text-xs md:text-base mr-2"
               onClick={() => setShowEmailTest(!showEmailTest)}
             >
-              {showEmailTest ? 'Close Email Test' : 'Email Test'}
+              {showEmailTest ? 'Close' : 'Email Test'}
             </button>
             <button 
-              className="px-4 py-2 bg-gray-50 hover:bg-gray-100 rounded-md text-gray-700 font-medium transition-colors"
-              onClick={() => window.open('https://github.com/yourusername/thursday-treating-calendar', '_blank')}
+              className="px-2 py-1.5 md:px-4 md:py-2 bg-gray-50 hover:bg-gray-100 rounded-md text-gray-700 font-medium transition-colors text-xs md:text-base"
+              onClick={() => window.open('https://github.com/Skymore/treating-calendar', '_blank')}
             >
               GitHub
             </button>
@@ -75,7 +75,7 @@ export default function App() {
         </div>
         
         {showTeamInfo && (
-          <div className="mt-4">
+          <div className="mt-4 overflow-x-auto">
             <TeamInfo 
               onClose={() => setShowTeamInfo(false)} 
             />
@@ -90,15 +90,15 @@ export default function App() {
           fetchData={fetchData}
         />
         
-        {showEmailTest && <EmailTest />}
+        {showEmailTest && <div className="overflow-x-auto"><EmailTest /></div>}
       </header>
       
-      <main>
+      <main className="overflow-x-auto">
         <TreatingCalendar />
       </main>
       
       <footer className="mt-8 pt-4 border-t text-center text-gray-500 text-sm">
-        <div className="flex justify-between items-center">
+        <div className="flex flex-col md:flex-row justify-between items-center">
           <div>
             &copy; {new Date().getFullYear()} Rui Tao's Treating Calendar
           </div>
